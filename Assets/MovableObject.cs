@@ -5,13 +5,12 @@ using UnityEngine;
 
 public class MovableObject : MonoBehaviour
 {
-    private Vector3 screenPoint;
-    private Vector3 offset;
-    private float footOffsetDistance;
+    Vector3 screenPoint;
+    Vector3 offset;
+    float footOffsetDistance;
 
     public LayerMask groundMask;
     public Transform footOffsetPoint;
-
 
     private void Start()
     {
@@ -25,7 +24,6 @@ public class MovableObject : MonoBehaviour
         offset = gameObject.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
 
     }
-
     void OnMouseDrag()
     {
         transform.position = getNewPosition();
@@ -54,14 +52,10 @@ public class MovableObject : MonoBehaviour
 
         if (Physics.Raycast(rayStart, transform.TransformDirection(Vector3.down), out hit, Mathf.Infinity, groundMask))
         {
-            Debug.DrawRay(rayStart, transform.TransformDirection(Vector3.forward) * hit.distance, Color.yellow);
-            Debug.Log("Hit:"+hit.point);
             return hit.point.y + footOffsetDistance;
         }
         else
         {
-            Debug.DrawRay(rayStart, transform.TransformDirection(Vector3.forward) * 1000, Color.white);
-            Debug.Log("No Hit");
             return transform.position.y;
         }
     }
