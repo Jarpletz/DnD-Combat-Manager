@@ -1,20 +1,55 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
+using Unity.Netcode;
 using UnityEngine;
 
-public class MovableObject : MonoBehaviour
+public class MovableObject : NetworkBehaviour
 {
     Vector3 screenPoint;
     Vector3 offset;
     float footOffsetDistance;
+    bool isNetworkInitialized = false;
 
     public LayerMask groundMask;
     public Transform footOffsetPoint;
+    public NetworkVariable<Vector3> Position = new NetworkVariable<Vector3>();
+
 
     private void Start()
     {
         footOffsetDistance = transform.position.y - footOffsetPoint.position.y;
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        isNetworkInitialized = true;
+        Position.Value = transform.position;
+    }
+
+    public void Move()
+    {
+        var pos = getNewPosition();
+
+        if (NetworkManager.Singleton.IsServer)
+        {
+            transform.position = pos;
+            Position.Value = pos;
+        }
+        else
+        {
+            SubmitPositionRequestServerRpc(pos);
+        }
+    }
+
+    [ServerRpc]
+    void SubmitPositionRequestServerRpc(Vector3 newPosition)
+    {
+        if (!IsServer)
+        {
+            Debug.Log("Cannot move, sice you aren't the server!");
+            return;
+        }
+            Position.Value = newPosition;
     }
 
     void OnMouseDown()
@@ -22,11 +57,19 @@ public class MovableObject : MonoBehaviour
         screenPoint = Camera.main.WorldToScreenPoint(gameObject.transform.position);
 
         offset = gameObject.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
-
     }
     void OnMouseDrag()
     {
-        transform.position = getNewPosition();
+        Move();
+        transform.position = Position.Value;
+        
+    }
+
+    private void Update()
+    {
+        if (!isNetworkInitialized) return; 
+
+        transform.position = Position.Value;
     }
 
     Vector3 getNewPosition()
