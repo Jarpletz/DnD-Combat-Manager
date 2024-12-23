@@ -14,8 +14,11 @@ public class Entity : NetworkBehaviour
 
     private void OnMouseDown()
     {
-        UIManager uiManager = GameObject.FindWithTag("UI").GetComponent<UIManager>();
-        uiManager.ShowEntityDetails(this);
+        if (IsOwner || IsServer)
+        {
+            UIManager uiManager = GameObject.FindWithTag("UI").GetComponent<UIManager>();
+            uiManager.ShowEntityDetails(this);
+        }
     }
 
     public void updateName(string newName)
