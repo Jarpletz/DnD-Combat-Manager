@@ -16,11 +16,6 @@ public class EntityManager : MonoBehaviour
             Destroy(gameObject);
     }
 
-    void Start()
-    {
-        
-    }
-
     public bool canMoveToCell(GameObject obj, Vector3 newPosition)
     {
         Vector2 newPos =new Vector2(newPosition.x, newPosition.z);

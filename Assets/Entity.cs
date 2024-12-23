@@ -12,6 +12,12 @@ public class Entity : NetworkBehaviour
 
     [SerializeField] bool hasDeathSaves = true;
 
+    private void OnMouseDown()
+    {
+        UIManager uiManager = GameObject.FindWithTag("UI").GetComponent<UIManager>();
+        uiManager.ShowEntityDetails(this);
+    }
+
     public void updateName(string newName)
     {
         if (IsServer)
