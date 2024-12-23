@@ -7,6 +7,7 @@ public class MovableObject : NetworkBehaviour
 {
     Vector3 screenPoint;
     Vector3 offset;
+    Vector3 previousPosition;
     float footOffsetDistance;
     bool isNetworkInitialized = false;
 
@@ -17,6 +18,8 @@ public class MovableObject : NetworkBehaviour
 
     private void Start()
     {
+        //figure out how far from the ground to place the object
+        if (footOffsetPoint == null) footOffsetPoint = transform;
         footOffsetDistance = transform.position.y - footOffsetPoint.position.y;
     }
 
@@ -24,6 +27,12 @@ public class MovableObject : NetworkBehaviour
     {
         isNetworkInitialized = true;
         Position.Value = transform.position;
+
+        if (IsServer)
+        {
+            //add to the Entity Manager
+            EntityManager.Instance.entities.Add(gameObject);
+        }
     }
 
     public void Move()
@@ -32,8 +41,11 @@ public class MovableObject : NetworkBehaviour
 
         if (NetworkManager.Singleton.IsServer)
         {
-            transform.position = pos;
-            Position.Value = pos;
+            if (EntityManager.Instance.canMoveToCell(gameObject,pos))
+            {
+                transform.position = pos;
+                Position.Value = pos;
+            }
         }
         else
         {
@@ -49,20 +61,28 @@ public class MovableObject : NetworkBehaviour
             Debug.Log("Cannot move, sice you aren't the server!");
             return;
         }
+        if (EntityManager.Instance.canMoveToCell(gameObject,newPosition))
+        {
             Position.Value = newPosition;
+        }
     }
 
     void OnMouseDown()
     {
+        if (!isNetworkInitialized) return;
+
         screenPoint = Camera.main.WorldToScreenPoint(gameObject.transform.position);
 
         offset = gameObject.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
     }
     void OnMouseDrag()
     {
-        Move();
-        transform.position = Position.Value;
-        
+        if (!isNetworkInitialized) return;
+        if (IsOwner || IsServer)
+        {
+            Move();
+            transform.position = Position.Value;
+        }
     }
 
     private void Update()
