@@ -12,6 +12,15 @@ public class Entity : NetworkBehaviour
 
     [SerializeField] bool hasDeathSaves = true;
 
+    public override void OnNetworkSpawn()
+    {
+        if (IsServer)
+        {
+            //add to the Entity Manager
+            EntityManager.Instance.entities.Add(this);
+        }
+    }
+
     private void OnMouseDown()
     {
         if (IsOwner || IsServer)

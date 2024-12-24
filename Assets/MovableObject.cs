@@ -27,12 +27,6 @@ public class MovableObject : NetworkBehaviour
     {
         isNetworkInitialized = true;
         Position.Value = transform.position;
-
-        if (IsServer)
-        {
-            //add to the Entity Manager
-            EntityManager.Instance.entities.Add(gameObject);
-        }
     }
 
     public void Move()
