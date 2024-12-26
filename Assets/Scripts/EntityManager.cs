@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Netcode;
 using UnityEngine;
 
-public class EntityManager : MonoBehaviour
+public class EntityManager : NetworkBehaviour
 {
     public static EntityManager Instance;
 
@@ -19,6 +20,7 @@ public class EntityManager : MonoBehaviour
         else
             Destroy(gameObject);
     }
+
 
     public bool canMoveToCell(GameObject obj, Vector3 newPosition)
     {
@@ -40,6 +42,6 @@ public class EntityManager : MonoBehaviour
 
     public void Update()
     {
-        entities.OrderBy(e => e.initiative.Value);
+        entities = entities.OrderByDescending(e => e.initiative.Value).ToList();
     }
 }

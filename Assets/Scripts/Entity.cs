@@ -11,14 +11,20 @@ public class Entity : NetworkBehaviour
     public NetworkVariable<bool> isAlive = new NetworkVariable<bool>(true);
 
     [SerializeField] bool hasDeathSaves = true;
+    [SerializeField] string initialName;
 
     public override void OnNetworkSpawn()
     {
         if (IsServer)
         {
-            //add to the Entity Manager
-            EntityManager.Instance.entities.Add(this);
+            updateName(initialName);
+            health.Value = 0;
+            maxHealth.Value = 0;
+            initiative.Value = 0;
+            isAlive.Value = true;
         }
+        //add to the Entity Manager
+        EntityManager.Instance.entities.Add(this);
     }
 
     private void OnMouseDown()
@@ -30,6 +36,10 @@ public class Entity : NetworkBehaviour
         }
     }
 
+    public string getEntityName()
+    {
+        return entityName.Value.Value;
+    }
     public void updateName(string newName)
     {
         if (IsServer)

@@ -1,9 +1,6 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class EntityUI : MonoBehaviour
 {
@@ -18,7 +15,7 @@ public class EntityUI : MonoBehaviour
         if(entity != null)
         {
             this.entity = entity;
-            nameText.text = entity.entityName.Value.ToString();
+            nameText.text = entity.getEntityName();
             initiativeInputField.text = entity.initiative.Value.ToString();
         }
     }
@@ -29,6 +26,12 @@ public class EntityUI : MonoBehaviour
     }
     public void UpdateInititative()
     {
-        entity.updateIntitative( Int32.Parse(initiativeInputField.text) );
+        try
+        {
+            entity.updateIntitative(Int32.Parse(initiativeInputField.text));
+        }catch(FormatException e)
+        {
+            Debug.LogWarning("Format Error Updating Initiative:" + e.Message);
+        }
     }
 }

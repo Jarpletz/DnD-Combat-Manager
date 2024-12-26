@@ -304,3 +304,4 @@ MonoBehaviour:
   isAlive:
     m_InternalValue: 1
   hasDeathSaves: 1
+  initialName: Orc

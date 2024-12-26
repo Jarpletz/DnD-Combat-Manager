@@ -56,14 +56,6 @@ public class CameraMovement : MonoBehaviour
         if (Input.GetMouseButton(1))
         {
             float rotateDirection = mouseDelta.x;
-            if (rotateDirection > 0.0)
-            {
-                rotateDirection = 1;
-            }
-            else if (rotateDirection < 0.0)
-            {
-                rotateDirection = -1;
-            }
 
             rotateValue = rotateDirection * rotateSpeed * Time.deltaTime;
 
