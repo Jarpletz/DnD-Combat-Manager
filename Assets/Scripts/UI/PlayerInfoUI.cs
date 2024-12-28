@@ -9,6 +9,11 @@ public class PlayerInfoUI : UIInfo
     
     void Update()
     {
-        currentPlayerText.text = EntityManager.Instance.GetCurrentEntity().getEntityName();
+        Entity currentEntity = EntityManager.Instance.GetCurrentEntity();
+        if (currentEntity)
+        {
+            currentPlayerText.text = currentEntity.getEntityName();
+
+        }
     }
 }
