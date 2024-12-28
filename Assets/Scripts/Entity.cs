@@ -17,7 +17,7 @@ public class Entity : NetworkBehaviour
     {
         if (IsServer)
         {
-            updateName(initialName);
+            updateName(initialName + OwnerClientId.ToString());
             health.Value = 0;
             maxHealth.Value = 0;
             initiative.Value = 0;
@@ -25,6 +25,15 @@ public class Entity : NetworkBehaviour
         }
         //add to the Entity Manager
         EntityManager.Instance.entities.Add(this);
+
+        base.OnNetworkSpawn();
+    }
+
+    public override void OnDestroy()
+    {
+        EntityManager.Instance.entities.Remove(this);
+
+        base.OnDestroy();
     }
 
     private void OnMouseDown()

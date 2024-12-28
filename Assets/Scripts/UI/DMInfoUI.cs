@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Netcode;
 using UnityEngine;
 
-public class DMInfoUI : MonoBehaviour
+public class DMInfoUI : UIInfo
 {
     [SerializeField] GameObject entityOrderInfoPrefab;
     [SerializeField] GameObject scrollContent;
@@ -28,6 +29,8 @@ public class DMInfoUI : MonoBehaviour
         }
         return false;
     }
+    
+    //if the list is not sorted properly by initiative, return false 
     private bool ListIsSorted()
     {
         if (entityOrderInfos.Count < 1) return true;
@@ -40,6 +43,7 @@ public class DMInfoUI : MonoBehaviour
             {
                 return false;
             }
+            previousInitiative = initiative;
         }
 
 
