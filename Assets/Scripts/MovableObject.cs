@@ -11,8 +11,11 @@ public class MovableObject : NetworkBehaviour
     float footOffsetDistance;
     bool isNetworkInitialized = false;
 
+    [Header ("Components")]
     public LayerMask groundMask;
     public Transform footOffsetPoint;
+
+    [Header ("Position Network Variable")]
     public NetworkVariable<Vector3> Position = new NetworkVariable<Vector3>();
 
 
@@ -27,23 +30,43 @@ public class MovableObject : NetworkBehaviour
     {
         isNetworkInitialized = true;
         Position.Value = transform.position;
+        previousPosition = transform.position;
     }
 
-    public void Move()
+    public bool HasUnconfirmedMovement()
     {
-        var pos = getNewPosition();
+        return previousPosition != Position.Value;
+    }
+    public float GetUnconfirmmedDistance()
+    {
+        float rawDistance = Vector3.Distance(Position.Value, previousPosition);
+        return rawDistance * GameSettings.Instance.distanceScaleMultipler;
+    }
+
+    public void ConfirmMovement()
+    {
+        previousPosition = transform.position;
+    }
+    public void CancelMovement()
+    {
+        Move(previousPosition);
+    }
+
+    public void Move(Vector3 position)
+    {
+        
 
         if (NetworkManager.Singleton.IsServer)
         {
-            if (EntityManager.Instance.canMoveToCell(gameObject,pos))
+            if (EntityManager.Instance.canMoveToCell(gameObject,position))
             {
-                transform.position = pos;
-                Position.Value = pos;
+                transform.position = position;
+                Position.Value = position;
             }
         }
         else
         {
-            SubmitPositionRequestServerRpc(pos);
+            SubmitPositionRequestServerRpc(position);
         }
     }
 
@@ -74,7 +97,8 @@ public class MovableObject : NetworkBehaviour
         if (!isNetworkInitialized) return;
         if (IsOwner || IsServer)
         {
-            Move();
+            Vector3 newPosition = getNewPosition();
+            Move(newPosition);
             transform.position = Position.Value;
         }
     }
