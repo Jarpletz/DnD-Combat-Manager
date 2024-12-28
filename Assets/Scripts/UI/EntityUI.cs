@@ -19,7 +19,6 @@ public class EntityUI : MonoBehaviour
             initiativeInputField.text = entity.initiative.Value.ToString();
         }
     }
-
     public void CloseEntityUI()
     {
         entity = null;
@@ -34,4 +33,26 @@ public class EntityUI : MonoBehaviour
             Debug.LogWarning("Format Error Updating Initiative:" + e.Message);
         }
     }
+    public void HandleEndTurn()
+    {
+        EntityManager.Instance.IncrementTurn();
+    }
+
+    private void Update()
+    {
+        updateTurnDisplay();
+    }
+
+    private void updateTurnDisplay()
+    {
+        if (EntityManager.Instance.IsCurrentEntity(entity))
+        {
+            turnObject.SetActive(true);
+        }
+        else
+        {
+            turnObject.SetActive(false);
+        }
+    }
+   
 }

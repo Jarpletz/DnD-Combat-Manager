@@ -69,5 +69,13 @@ public class DMInfoUI : UIInfo
             entityInfo.GetComponent<EntityInfoBehavior>().Initialize(entity);
         }
     }
-
+    
+    public void HandleIncrementTurn()
+    {
+        EntityManager.Instance.IncrementTurn();
+    }
+    public void HandleDecrementTurn()
+    {
+        EntityManager.Instance.DecrementTurn();
+    }
 }

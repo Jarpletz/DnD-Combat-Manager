@@ -1,18 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class PlayerInfoUI : UIInfo
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
+    [SerializeField] TextMeshProUGUI currentPlayerText;
+    
     void Update()
     {
-        
+        currentPlayerText.text = EntityManager.Instance.GetCurrentEntity().getEntityName();
     }
 }
