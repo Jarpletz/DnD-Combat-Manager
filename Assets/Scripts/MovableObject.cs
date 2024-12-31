@@ -1,7 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
+using Unity.Collections.LowLevel.Unsafe;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class MovableObject : NetworkBehaviour
 {
@@ -10,13 +12,15 @@ public class MovableObject : NetworkBehaviour
     Vector3 previousPosition;
     float footOffsetDistance;
     bool isNetworkInitialized = false;
+    bool isMouseDown = false;
 
     [Header ("Components")]
     public LayerMask groundMask;
     public Transform footOffsetPoint;
 
-    [Header ("Position Network Variable")]
+    [Header ("Network Variables")]
     public NetworkVariable<Vector3> Position = new NetworkVariable<Vector3>();
+    [SerializeField] private NetworkVariable<bool> IsFlying = new NetworkVariable<bool> ();
 
 
     private void Start()
@@ -29,8 +33,12 @@ public class MovableObject : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         isNetworkInitialized = true;
-        Position.Value = transform.position;
-        previousPosition = transform.position;
+        if (Position.Value == Vector3.zero)
+        {
+            Position.Value = transform.position;
+        }
+        previousPosition = Position.Value;
+        IsFlying.Value = false;
     }
 
     public bool HasUnconfirmedMovement()
@@ -45,18 +53,18 @@ public class MovableObject : NetworkBehaviour
 
     public void ConfirmMovement()
     {
+        Debug.Log($"ConfirmMovement - Setting previousPosition: {transform.position}");
         previousPosition = transform.position;
     }
     public void CancelMovement()
     {
+        Debug.Log($"CancelMovement - Moving to previousPosition: {previousPosition}");
         Move(previousPosition);
     }
 
-    public void Move(Vector3 position)
+    void Move(Vector3 position)
     {
-        
-
-        if (NetworkManager.Singleton.IsServer)
+        if (IsServer)
         {
             if (EntityManager.Instance.canMoveToCell(gameObject,position))
             {
@@ -81,16 +89,95 @@ public class MovableObject : NetworkBehaviour
         if (EntityManager.Instance.canMoveToCell(gameObject,newPosition))
         {
             Position.Value = newPosition;
+            transform.position = newPosition;
+
         }
+    }
+
+    public void ToggleIsFlying(bool newValue)
+    {
+        if (IsServer)
+        {
+            IsFlying.Value = newValue;
+            Vector3 groundPosition = Position.Value;
+            try
+            {
+                groundPosition.y = getGroundPosition(groundPosition.x, groundPosition.z);
+                Move(groundPosition);
+            }
+            catch(Exception e)
+            {
+                Debug.LogWarning(e.Message);
+            }
+        }
+        else
+        {
+            ToggleIsFlyingServerRpc(newValue);
+        }
+    }
+    [ServerRpc]
+    private void ToggleIsFlyingServerRpc(bool newValue)
+    {
+        IsFlying.Value = newValue;
+        Vector3 groundPosition = Position.Value;
+        try
+        {
+            groundPosition.y = getGroundPosition(groundPosition.x, groundPosition.z);
+            Move(groundPosition);
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning(e.Message);
+        }
+    }
+
+    public bool GetIsFlying()
+    {
+        return IsFlying.Value;
+    }
+    public float GetDistanceFromGround()
+    {
+        float footPosition = transform.position.y + footOffsetDistance;
+        return (footPosition - getGroundPosition(transform.position.x, transform.position.z)) * GameSettings.Instance.distanceScaleMultipler;
+    }
+    public void FlyUp()
+    {
+        if (!IsFlying.Value) return;
+        Vector3 newPosition = Position.Value;
+        newPosition.y = newPosition.y + 1;
+        Move(newPosition);
+    }
+    public void FlyDown()
+    {
+        //must be flying for this to do anything.
+        if (!IsFlying.Value) return;
+
+        //calculate the new position, shifted down a block
+        Vector3 newPosition = Position.Value;
+        newPosition.y = newPosition.y - 1;
+
+        //if this would put them underground, snap to right above ground.
+        if(newPosition.y < getGroundPosition(newPosition.x, newPosition.z))
+        {
+            newPosition.y = getGroundPosition(newPosition.x,newPosition.z);
+        }
+        Move(newPosition);
     }
 
     void OnMouseDown()
     {
         if (!isNetworkInitialized) return;
 
-        screenPoint = Camera.main.WorldToScreenPoint(gameObject.transform.position);
+        screenPoint = Camera.main.WorldToScreenPoint(Position.Value);
 
-        offset = gameObject.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
+        offset = Position.Value - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
+        Debug.Log($"OnMouseDown - ScreenPoint: {screenPoint}, Offset: {offset}");
+
+        isMouseDown = true;
+    }
+    private void OnMouseUp()
+    {
+        isMouseDown = false;
     }
     void OnMouseDrag()
     {
@@ -98,20 +185,33 @@ public class MovableObject : NetworkBehaviour
         if (IsOwner || IsServer)
         {
             Vector3 newPosition = getNewPosition();
+
+            Debug.Log($"OnMouseDrag - Start: Transform: {transform.position}, Position: {Position.Value}, Previous: {previousPosition}");
+
+
             Move(newPosition);
-            transform.position = Position.Value;
         }
     }
 
     private void Update()
     {
-        if (!isNetworkInitialized) return; 
+        if (!isNetworkInitialized) return;
 
-        transform.position = Position.Value;
+        if (transform.position != Position.Value)
+        {
+            transform.position = Position.Value;
+        }
     }
 
     Vector3 getNewPosition()
     {
+        if (!isMouseDown)
+        {
+            Debug.LogWarning("getNewPosition called before OnMouseDown initialized values!");
+            return transform.position; // Fallback to current position
+        }
+        Debug.Log($"getNewPosition - ScreenPoint: {screenPoint}, Offset: {offset}, Flying: {IsFlying.Value}");
+
         Vector3 curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
 
         //get the new position
@@ -119,17 +219,45 @@ public class MovableObject : NetworkBehaviour
         //for x and z, snap to grid
         newPosition.x = Mathf.Round(newPosition.x);
         newPosition.z = Mathf.Round(newPosition.z);
-        //for y, snap to ground
-        newPosition.y = getYPositionFromRaycast();
+        if (IsFlying.Value)
+        {
+            // if we are flying we dont need to snap to ground.
+            // however, we do if flying would put us below ground.
+            float groundLevel = getGroundPosition(newPosition.x, newPosition.z);
+            if(groundLevel > Position.Value.y)
+            {
+                Debug.Log("Below ground, snapping to ground: "+groundLevel + " > "+ Position.Value.y);
+                newPosition.y = groundLevel;
+            }
+            else
+            {
+                Debug.Log("Keeping at current height");
+                newPosition.y = Position.Value.y;
+            }
+
+        }
+        else
+        {//if not y, snap to ground
+
+            try
+            {
+                newPosition.y = getGroundPosition(newPosition.x, newPosition.z);
+            }
+            catch(Exception e)
+            {
+                Debug.LogWarning(e.Message);
+                newPosition.y = Position.Value.y;
+            }
+        }
 
         return newPosition;
     }
 
-    float getYPositionFromRaycast()
+    float getGroundPosition(float x, float z)
     {
         RaycastHit hit;
         // Does the ray intersect any objects excluding the player layer
-        Vector3 rayStart = new Vector3(transform.position.x, 1000f, transform.position.z);
+        Vector3 rayStart = new Vector3(x, 1000f, z);
 
         if (Physics.Raycast(rayStart, transform.TransformDirection(Vector3.down), out hit, Mathf.Infinity, groundMask))
         {
@@ -137,9 +265,8 @@ public class MovableObject : NetworkBehaviour
         }
         else
         {
-            return transform.position.y;
+            throw new Exception("Ground not found!");
         }
     }
-
 
 }
