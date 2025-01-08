@@ -794,7 +794,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 4022623816
+  GlobalObjectIdHash: 3587716976
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -816,10 +816,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   groundMask:
     serializedVersion: 2
-    m_Bits: 55
+    m_Bits: 114
   footOffsetPoint: {fileID: 689963302817159257}
   Position:
     m_InternalValue: {x: 0, y: 0, z: 0}
+  IsFlying:
+    m_InternalValue: 0
 --- !u!64 &4064153964219814028
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -961,7 +963,8 @@ MonoBehaviour:
     m_InternalValue: 0
   isAlive:
     m_InternalValue: 1
-  hasDeathSaves: 0
+  hasDeathSaves: 1
+  isPlayer: 1
   initialName: Posty the Formitable
   nameTag: {fileID: 9210230462275891937}
   statusText: {fileID: 5982846179494194095}

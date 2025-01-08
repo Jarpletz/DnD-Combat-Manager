@@ -14,12 +14,12 @@ public class Entity : NetworkBehaviour
 
     [Header ("Settings")]
     [SerializeField] bool hasDeathSaves = true;
+    [SerializeField] bool isPlayer = true;
     [SerializeField] string initialName;
 
     [Header("Child Components")]
     [SerializeField] TextMeshPro nameTag;
     [SerializeField] TextMeshPro statusText;
-
     public override void OnNetworkSpawn()
     {
         if (IsServer)
@@ -29,9 +29,17 @@ public class Entity : NetworkBehaviour
             maxHealth.Value = 0;
             initiative.Value = 0;
             isAlive.Value = true;
+
+            //if is a player, create a measuring volume for that player
+            if (isPlayer)
+            {
+                FindObjectOfType<MeasuringVolumeManager>().SpawnMeasuringVolume(OwnerClientId);
+            }
         }
         //add to the Entity Manager
         EntityManager.Instance.entities.Add(this);
+
+        
 
         base.OnNetworkSpawn();
     }

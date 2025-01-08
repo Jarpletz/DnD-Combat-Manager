@@ -128,14 +128,19 @@ namespace RuntimeHandle
             _previousMousePosition = GetMousePosition();
 
             transform.position = target.transform.position;
-            if (space == HandleSpace.LOCAL || type == HandleType.SCALE)
+
+            if(type == HandleType.ROTATION)
             {
-                transform.rotation = target.transform.rotation;
+                if (space == HandleSpace.LOCAL || type == HandleType.SCALE)
+                {
+                    transform.rotation = target.transform.rotation;
+                }
+                else
+                {
+                    transform.rotation = Quaternion.identity;
+                }
             }
-            else
-            {
-                transform.rotation = Quaternion.identity;
-            }
+            
         }
 
         public static bool GetPointerDown()

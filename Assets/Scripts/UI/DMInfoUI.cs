@@ -51,7 +51,6 @@ public class DMInfoUI : UIInfo
     }
     private void UpdateEntityList()
     {
-        Debug.Log("Updating Entities");
         // Clear existing UI elements
         foreach (var entityInfo in entityOrderInfos)
         {
