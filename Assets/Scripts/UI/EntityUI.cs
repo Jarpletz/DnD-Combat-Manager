@@ -2,6 +2,7 @@ using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Unity.Netcode;
 
 public class EntityUI : MonoBehaviour
 {
@@ -20,6 +21,19 @@ public class EntityUI : MonoBehaviour
     [SerializeField] TextMeshProUGUI flyingHeightDisplay;
     [SerializeField] Toggle flyingToggle;
 
+
+  
+
+    public void OnDestroy()
+    {
+        if (moveable)
+        {
+            // Unsubscribe from the flying callback
+            moveable.OnFlyingStateChanged -= UpdateFlyingToggle;
+        }
+
+    }
+
     public void SetupEntityUI(Entity entity)
     {
         //cancel any movement on a previously selected entity, if applicable.
@@ -32,7 +46,11 @@ public class EntityUI : MonoBehaviour
         {
             this.entity = entity;
             moveable = entity.gameObject.GetComponent<MovableObject>();
-            flyingToggle.isOn = moveable && moveable.GetIsFlying();
+
+            //subscribe to watch the flying stuff
+            moveable.OnFlyingStateChanged += UpdateFlyingToggle;
+            UpdateFlyingToggle(moveable.GetIsFlying());
+
             nameText.text = entity.getEntityName();
             initiativeInputField.text = entity.initiative.Value.ToString();
         }
@@ -41,7 +59,13 @@ public class EntityUI : MonoBehaviour
     {
         CancelEntityMovement();
         entity = null;
-        moveable = null;
+        if (moveable)
+        {
+            moveable.OnFlyingStateChanged -= UpdateFlyingToggle;
+            moveable = null;
+
+        }
+
     }
     public void UpdateInititative()
     {
@@ -102,7 +126,7 @@ public class EntityUI : MonoBehaviour
 
     private void UpdateTurnDisplay()
     {
-        if (EntityManager.Instance.IsCurrentEntity(entity))
+        if (EntityManager.Instance && EntityManager.Instance.IsCurrentEntity(entity))
         {
             turnObject.SetActive(true);
         }
@@ -128,12 +152,14 @@ public class EntityUI : MonoBehaviour
     private void UpdateFlyingDisplay()
     {
         bool isFlying = moveable && moveable.GetIsFlying();
-        flyingControls.SetActive(isFlying);
-        flyingToggle.isOn = isFlying;
         if (isFlying)
         {
             flyingHeightDisplay.text = moveable.GetDistanceFromGround().ToString("0") + " ft.";
         }
     }
-
+    private void UpdateFlyingToggle(bool isFlying)
+    {
+        flyingControls.SetActive(isFlying);
+        flyingToggle.isOn = isFlying;
+    }
 }

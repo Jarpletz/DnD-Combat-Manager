@@ -1,9 +1,6 @@
 using System;
-using Unity.Collections.LowLevel.Unsafe;
 using Unity.Netcode;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class MovableObject : NetworkBehaviour
 {
@@ -21,7 +18,16 @@ public class MovableObject : NetworkBehaviour
     [Header ("Network Variables")]
     public NetworkVariable<Vector3> Position = new NetworkVariable<Vector3>();
     [SerializeField] private NetworkVariable<bool> IsFlying = new NetworkVariable<bool> ();
+    public delegate void FlyingStateChanged(bool isFlying);
+    public event FlyingStateChanged OnFlyingStateChanged;
 
+    private void Awake()
+    {
+        IsFlying.OnValueChanged += (oldValue, newValue) =>
+        {
+            OnFlyingStateChanged?.Invoke(newValue);
+        };
+    }
 
     private void Start()
     {
@@ -33,12 +39,16 @@ public class MovableObject : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         isNetworkInitialized = true;
-        if (Position.Value == Vector3.zero)
+        if (IsServer)
         {
-            Position.Value = transform.position;
+            if (Position.Value == Vector3.zero)
+            {
+                Position.Value = transform.position;
+            }
+            previousPosition = Position.Value;
+            IsFlying.Value = false;
         }
-        previousPosition = Position.Value;
-        IsFlying.Value = false;
+       
     }
 
     public bool HasUnconfirmedMovement()
@@ -53,12 +63,10 @@ public class MovableObject : NetworkBehaviour
 
     public void ConfirmMovement()
     {
-        Debug.Log($"ConfirmMovement - Setting previousPosition: {transform.position}");
         previousPosition = transform.position;
     }
     public void CancelMovement()
     {
-        Debug.Log($"CancelMovement - Moving to previousPosition: {previousPosition}");
         Move(previousPosition);
     }
 
@@ -171,7 +179,6 @@ public class MovableObject : NetworkBehaviour
         screenPoint = Camera.main.WorldToScreenPoint(Position.Value);
 
         offset = Position.Value - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
-        Debug.Log($"OnMouseDown - ScreenPoint: {screenPoint}, Offset: {offset}");
 
         isMouseDown = true;
     }
@@ -185,9 +192,6 @@ public class MovableObject : NetworkBehaviour
         if (IsOwner || IsServer)
         {
             Vector3 newPosition = getNewPosition();
-
-            Debug.Log($"OnMouseDrag - Start: Transform: {transform.position}, Position: {Position.Value}, Previous: {previousPosition}");
-
 
             Move(newPosition);
         }
@@ -210,7 +214,6 @@ public class MovableObject : NetworkBehaviour
             Debug.LogWarning("getNewPosition called before OnMouseDown initialized values!");
             return transform.position; // Fallback to current position
         }
-        Debug.Log($"getNewPosition - ScreenPoint: {screenPoint}, Offset: {offset}, Flying: {IsFlying.Value}");
 
         Vector3 curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
 
@@ -226,12 +229,10 @@ public class MovableObject : NetworkBehaviour
             float groundLevel = getGroundPosition(newPosition.x, newPosition.z);
             if(groundLevel > Position.Value.y)
             {
-                Debug.Log("Below ground, snapping to ground: "+groundLevel + " > "+ Position.Value.y);
                 newPosition.y = groundLevel;
             }
             else
             {
-                Debug.Log("Keeping at current height");
                 newPosition.y = Position.Value.y;
             }
 
