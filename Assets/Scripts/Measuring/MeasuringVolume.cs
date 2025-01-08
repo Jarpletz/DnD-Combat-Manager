@@ -25,16 +25,35 @@ public class MeasuringVolume : NetworkBehaviour
     [SerializeField] float rotationSpeed;
 
     [Header ("Possible Volumes")]
-    [SerializeField] List<NameObjectPair> volumes = new List<NameObjectPair>();
+    public List<NameObjectPair> volumes = new List<NameObjectPair>();
 
     [Header("Network Variables")]
     private NetworkVariable<FixedString64Bytes> volumeName = new NetworkVariable<FixedString64Bytes> ();
     public NetworkVariable<float> volumeSizeFeet = new NetworkVariable<float>();
     public NetworkVariable<bool> showOthers = new NetworkVariable<bool> ();
+    public delegate void StateChanged();
+    public event StateChanged OnStateChanged;
 
     [Header("Local Settings")]
     public bool showTransformHandles;
     public bool isDisplayed;
+
+    private void Awake()
+    {
+        //subscribe network variables to StateChanged event, so UI knows when to update
+        volumeName.OnValueChanged += (oldValue, newValue) =>
+        {
+            OnStateChanged?.Invoke();
+        };
+        volumeSizeFeet.OnValueChanged += (oldValue, newValue) =>
+        {
+            OnStateChanged?.Invoke();
+        };
+        showOthers.OnValueChanged += (oldValue, newValue) =>
+        {
+            OnStateChanged?.Invoke();
+        };
+    }
 
     private void Start()
     {
@@ -66,7 +85,7 @@ public class MeasuringVolume : NetworkBehaviour
         //show the volume if the conditions allow
         if (currentVolume)
         {
-            if (true/*(IsOwner && isDisplayed) || showOthers.Value*/)
+            if ((IsOwner && isDisplayed) || showOthers.Value)
             {
                 currentVolume.gameObject.SetActive(true);
             }
@@ -164,8 +183,6 @@ public class MeasuringVolume : NetworkBehaviour
 
     void changeVolume(string volumeName)
     {
-        Debug.Log("Changing Volume:" + volumeName);
-
         NameObjectPair newVolumePair = volumes.Find(v => v.name == volumeName);
         if (newVolumePair == null)
         {
