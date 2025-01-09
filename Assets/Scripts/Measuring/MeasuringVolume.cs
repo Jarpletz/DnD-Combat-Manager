@@ -74,7 +74,7 @@ public class MeasuringVolume : NetworkBehaviour
     private void Update()
     {
         //show the transform handles if they have permission and they should be shown
-        if((IsOwner || IsServer) && showTransformHandles)
+        if((IsOwner || IsServer) && isDisplayed && showTransformHandles)
         {
             rth.gameObject.SetActive(true);
         }
@@ -113,11 +113,11 @@ public class MeasuringVolume : NetworkBehaviour
             }
         }
         //if the volumes name has changed, change the volume displayed
-        if(getVolumeName() != currentObjectPair.name)
+        if(GetVolumeName() != currentObjectPair.name)
         {
             for(int i = 0; i < volumes.Count; i++)
             {
-                if(getVolumeName() == volumes[i].name)
+                if(GetVolumeName() == volumes[i].name)
                 {
                     changeVolume(volumes[i].name);
                     break;
@@ -126,11 +126,11 @@ public class MeasuringVolume : NetworkBehaviour
         }
     }
 
-    public string getVolumeName()
+    public string GetVolumeName()
     {
         return volumeName.Value.Value;
     }
-    public void setVolumeName(string newName)
+    public void UpdateVolumeName(string newName)
     {
         if (IsServer)
         {
