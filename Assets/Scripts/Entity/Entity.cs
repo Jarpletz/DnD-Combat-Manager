@@ -33,7 +33,7 @@ public class Entity : NetworkBehaviour
             //if is a player, create a measuring volume for that player
             if (isPlayer)
             {
-                FindObjectOfType<MeasuringVolumeManager>().SpawnMeasuringVolume(OwnerClientId);
+               FindObjectOfType<MeasuringVolumeManager>().SpawnMeasuringVolume(OwnerClientId);
             }
         }
         //add to the Entity Manager

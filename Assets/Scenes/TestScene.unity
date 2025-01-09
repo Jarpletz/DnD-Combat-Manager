@@ -983,6 +983,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Measuring Manager
       objectReference: {fileID: 0}
+    - target: {fileID: 7221893532978292109, guid: 6179c643bd33b2d44b937df7aaff3e10, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

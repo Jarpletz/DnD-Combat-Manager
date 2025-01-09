@@ -74,7 +74,7 @@ public class MeasuringVolume : NetworkBehaviour
     private void Update()
     {
         //show the transform handles if they have permission and they should be shown
-        if((IsOwner || IsServer) && isDisplayed && showTransformHandles)
+        if((IsOwner && isDisplayed && showTransformHandles) ||(IsServer && showOthers.Value))
         {
             rth.gameObject.SetActive(true);
         }
