@@ -152,3 +152,5 @@ MonoBehaviour:
     m_InternalValue: 0
   showTransformHandles: 1
   isDisplayed: 1
+  initialShapeName: Cube
+  initialSizeFeet: 15

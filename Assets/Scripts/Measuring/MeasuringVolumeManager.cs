@@ -6,6 +6,16 @@ using UnityEngine;
 public class MeasuringVolumeManager : NetworkBehaviour
 {
     [SerializeField] GameObject measuringVolumePrefab;
+
+    //when we spawn in, span a volume for the server (if they don't already have one)
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+        if(IsServer && !IsHost)
+        {
+            SpawnMeasuringVolume(0);
+        }
+    }
     public void SpawnMeasuringVolume(ulong clientId)
     {
 

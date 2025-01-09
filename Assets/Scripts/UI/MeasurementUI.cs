@@ -14,6 +14,8 @@ public class MeasurementUI : MonoBehaviour
     [SerializeField] Toggle showOthersToggle;
     [SerializeField] TMP_Dropdown shapeDropdown;
     [SerializeField] TMP_InputField sizeField;
+    [Header("Config")]
+    [SerializeField] Vector2 sizeRange;
 
 
     public void OnDestroy()
@@ -45,9 +47,18 @@ public class MeasurementUI : MonoBehaviour
             NetworkObject networkObject = volume.GetComponent<NetworkObject>();
             if (networkObject != null && networkObject.IsOwner)
             {
+                //set up the values if the volume is initialized, otherwise, drop it for now
                 measuringVolume = networkObject.GetComponent<MeasuringVolume>();
-                RefreshValues();
-                measuringVolume.OnStateChanged += RefreshValues;
+                if (measuringVolume.isInitialized)
+                {
+                    RefreshValues();
+                    measuringVolume.OnStateChanged += RefreshValues;
+                }
+                else
+                {
+                    measuringVolume = null;
+                }
+                
                 return;
             }
         }
@@ -68,7 +79,7 @@ public class MeasurementUI : MonoBehaviour
             shapeDropdown.options.Add(new TMP_Dropdown.OptionData() { text = pair.name });
         }
         shapeDropdown.value = shapeDropdown.options.FindIndex(option => option.text == measuringVolume.GetVolumeName());
-
+        shapeDropdown.RefreshShownValue();
         sizeField.text = measuringVolume.volumeSizeFeet.Value.ToString();
         showOthersToggle.isOn = measuringVolume.showOthers.Value;
     }
@@ -93,15 +104,15 @@ public class MeasurementUI : MonoBehaviour
         {
             int newSize = Int32.Parse(sizeField.text);
 
-            if(newSize < 1)
+            if(newSize < sizeRange.x)
             {
-                newSize = 1;
-                sizeField.text = "1";
+                newSize = (int)sizeRange.x;
+                sizeField.text = sizeRange.x.ToString();
             }
-            if(newSize > 500)
+            if(newSize > sizeRange.y)
             {
-                newSize = 500;
-                sizeField.text = "500";
+                newSize = (int)sizeRange.y;
+                sizeField.text = sizeRange.y.ToString();
             }
 
             measuringVolume.UpdateSize(newSize);

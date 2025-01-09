@@ -37,6 +37,9 @@ public class MeasuringVolume : NetworkBehaviour
     [Header("Local Settings")]
     public bool showTransformHandles;
     public bool isDisplayed;
+    [SerializeField] string initialShapeName;
+    [SerializeField] float initialSizeFeet;
+    public bool isInitialized = false;
 
     private void Awake()
     {
@@ -53,6 +56,15 @@ public class MeasuringVolume : NetworkBehaviour
         {
             OnStateChanged?.Invoke();
         };
+
+        //set some initial values
+        isDisplayed = false;
+        if (IsServer)
+        {
+            showOthers.Value = false;
+            volumeName.Value = initialShapeName;
+            volumeSizeFeet.Value = initialSizeFeet;
+        }
     }
 
     private void Start()
@@ -62,13 +74,13 @@ public class MeasuringVolume : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        base.OnNetworkSpawn();
         if (IsOwner)
         {
             UpdateSize(10);
         }
-        changeVolume("Cube");
-
-        base.OnNetworkSpawn();
+        changeVolume(initialShapeName);
+        isInitialized = true;
     }
 
     private void Update()
@@ -203,6 +215,7 @@ public class MeasuringVolume : NetworkBehaviour
         {
             previousTransform = currentVolume.transform;
             currentVolume.GetComponent<NetworkObject>().Despawn();
+            currentVolume = null;
         }
 
         GameObject newVolume = Instantiate(currentObjectPair.prefab, transform);
@@ -216,7 +229,12 @@ public class MeasuringVolume : NetworkBehaviour
 
         rth.SetTarget(netObj.gameObject);
         currentVolume = netObj;
-        setCurrentVolumeClientRpc(netObj.NetworkObjectId);
+        if (!IsOwner) 
+            currentVolume.gameObject.SetActive(showOthers.Value);
+        if (netObj.IsSpawned)
+        {
+            setCurrentVolumeClientRpc(netObj.NetworkObjectId);
+        }
     }
     
     [ClientRpc]
@@ -225,7 +243,12 @@ public class MeasuringVolume : NetworkBehaviour
         if (NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(volumeId, out var networkObject))
         {
             currentVolume = networkObject;
+            
             rth.SetTarget(networkObject.gameObject);
+            if (!IsOwner)
+            {
+                currentVolume.gameObject.SetActive(showOthers.Value);
+            }
             if (!IsServer)
             {
                 rth.startedDraggingHandle.AddListener(OnStartDrag);
@@ -249,17 +272,25 @@ public class MeasuringVolume : NetworkBehaviour
             updatePositionAfterDragServerRpc(currentVolume.transform.position);
         }
 
-        currentVolume.GetComponent<NetworkTransform>().enabled = true;
     }
 
     [ServerRpc]
     void updatePositionAfterDragServerRpc(Vector3 newPosition)
     {
         currentVolume.transform.position = newPosition;
+        FinsihDragClientRPC();
+    }
+
+    [ClientRpc]
+    void FinsihDragClientRPC()
+    {
+
+        currentVolume.GetComponent<NetworkTransform>().enabled = true;
     }
     [ServerRpc]
     void updateRotationServerRpc(float change)
-    {
-        currentVolume.transform.Rotate(0, rotationSpeed * Time.deltaTime, 0);
+    {   
+    currentVolume.transform.Rotate(0, rotationSpeed * Time.deltaTime, 0);
     }
+   
 }
