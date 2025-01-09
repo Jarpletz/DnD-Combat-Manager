@@ -47,7 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   camSpeed: 7
   zoomSpeed: 200
-  rotateSpeed: 250
+  rotateSpeed: 60
   xClamps: {x: -20, y: 20}
   zClamps: {x: -20, y: 20}
   zoomClamps: {x: 3, y: 15}
