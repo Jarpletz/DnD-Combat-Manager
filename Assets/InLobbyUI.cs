@@ -17,11 +17,11 @@ public class InLobbyUI : MonoBehaviour
     [Header("Player List")]
     [SerializeField] GameObject playerItemPrefab;
     [SerializeField] GameObject scrollContentObject;
-    List<Player> playerList = new List<Player>();
-    
+    List<PlayerListItemUI> playerListUIs = new List<PlayerListItemUI>();    
 
     [Header("Player Settings")]
     [SerializeField] TMP_InputField characterNameField;
+    [SerializeField] List<Color> possibleColors = new List<Color>();
 
     [Header("GM Settings")]
     [SerializeField] TMP_InputField encounterNameField;
@@ -68,17 +68,45 @@ public class InLobbyUI : MonoBehaviour
             encounterNameField.text = lobby.Data["EncounterName"].Value;
         }
 
-        if(playerList != lobby.Players)
-        {
-            UpdatePlayerList(lobby.Players);
-        }
-
-        playerList = lobby.Players;
+        
+        UpdatePlayerListInformation(lobby.Players);
+;
     }
 
-    void UpdatePlayerList(List<Player> updatedPlayers)
+    void RegeneratePlayerList(List<Player> updatedPlayers)
     {
+        Debug.Log("Regenerating Player List!");
 
+        //whipe the old list
+        playerListUIs.Clear();
+        foreach (Transform child in scrollContentObject.transform)
+        {
+            Destroy(child.gameObject);
+        }
+
+        //generate the new one
+        foreach(Player player in updatedPlayers)
+        {
+            GameObject newItem = Instantiate(playerItemPrefab, scrollContentObject.transform);
+            PlayerListItemUI itemUI = newItem.GetComponent<PlayerListItemUI>();
+            itemUI.SetUp(player);
+            playerListUIs.Add(itemUI);
+        }
+    }
+
+    void UpdatePlayerListInformation(List<Player> updatedPlayers)
+    {
+        if(updatedPlayers.Count != playerListUIs.Count)
+        {
+            RegeneratePlayerList(updatedPlayers);
+        }
+        else
+        {
+            for(int i=0; i<updatedPlayers.Count; i++)
+            {
+                playerListUIs[i].SetUp(updatedPlayers[i]);
+            }
+        }
     }
 
     public void QuitLobby()

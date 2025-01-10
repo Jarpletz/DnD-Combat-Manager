@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 5460749837385890234}
   - component: {fileID: 4530137478698052372}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: Name Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -203,7 +203,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: 0, z: 5.480797, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -328,7 +328,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2920653311312340542}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7658348102697564082}
+        m_TargetAssemblyTypeName: PlayerListItemUI, Assembly-CSharp
+        m_MethodName: KickPlayer
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &5437372109738293427
 GameObject:
   m_ObjectHideFlags: 0
@@ -338,6 +350,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6499789506809319873}
+  - component: {fileID: 7658348102697564082}
   m_Layer: 5
   m_Name: Player List Item
   m_TagString: Untagged
@@ -368,6 +381,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 267.16, y: 45.5391}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &7658348102697564082
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5437372109738293427}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a35593004f05ad4439e0544e99af01aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nameText: {fileID: 4530137478698052372}
+  colorImage: {fileID: 8029423760944307321}
+  kickButtonObject: {fileID: 2449757673716166459}
 --- !u!1 &8063283472862814322
 GameObject:
   m_ObjectHideFlags: 0

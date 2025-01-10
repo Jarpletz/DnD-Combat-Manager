@@ -156,12 +156,19 @@ public class LobbyManager : MonoBehaviour
             Debug.LogError(e.Message);
         }
     }
-    private async void KickPlayer()
+    public async void KickPlayer(string playerID) 
     {
         try
         {
-            await LobbyService.Instance.RemovePlayerAsync(joinedLobby.Id, joinedLobby.Players[1].Id);
-            JoinedLobbyUpdatedEvent?.Invoke(joinedLobby);
+            await LobbyService.Instance.RemovePlayerAsync(joinedLobby.Id, playerID);
+
+            if(playerID == AuthenticationService.Instance.PlayerId)
+            {
+                joinedLobby = null;
+                hostLobby = null;
+                JoinedLobbyUpdatedEvent?.Invoke(joinedLobby);
+            }
+
         }
         catch (LobbyServiceException e)
         {
@@ -179,8 +186,19 @@ public class LobbyManager : MonoBehaviour
             if (pollTimeer <= 0f)
             {
                 pollTimeer = 1.1f;
-                joinedLobby = await LobbyService.Instance.GetLobbyAsync(joinedLobby.Id);
-                UpdatedLobbyInfoEvent?.Invoke(joinedLobby);
+                try
+                {
+                    joinedLobby = await LobbyService.Instance.GetLobbyAsync(joinedLobby.Id);
+                    UpdatedLobbyInfoEvent?.Invoke(joinedLobby);
+                }
+                catch(LobbyServiceException e)
+                {//if ping fails, disconnect
+                    Debug.LogError(e.Message);
+                    joinedLobby = null;
+                    hostLobby = null;
+                    JoinAttemtedEvent?.Invoke(false, "Lost connection to server: "+e.Message);
+                    JoinedLobbyUpdatedEvent?.Invoke(joinedLobby);
+                }
             }
         }
     }
@@ -243,7 +261,7 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException e)
         {
             Debug.LogError(e.Message);
-            JoinAttemtedEvent?.Invoke(false, "Error joining lobby!");
+            JoinAttemtedEvent?.Invoke(false, "Error joining lobby: "+ e.Message);
         }
     }
 
@@ -253,6 +271,7 @@ public class LobbyManager : MonoBehaviour
         {
             await LobbyService.Instance.RemovePlayerAsync(joinedLobby.Id, AuthenticationService.Instance.PlayerId);
             joinedLobby = null;
+            hostLobby = null;
             JoinedLobbyUpdatedEvent?.Invoke(joinedLobby);
         }
         catch (LobbyServiceException e)
@@ -260,6 +279,7 @@ public class LobbyManager : MonoBehaviour
             Debug.LogError(e.Message);
         }
     }
+
     #endregion
 
     #region Player Info 
@@ -269,7 +289,8 @@ public class LobbyManager : MonoBehaviour
         {
             Data = new Dictionary<string, PlayerDataObject>
                     {
-                        { "PlayerName", new PlayerDataObject( PlayerDataObject.VisibilityOptions.Public, playerName) }
+                        { "PlayerName", new PlayerDataObject( PlayerDataObject.VisibilityOptions.Public, playerName) },
+                        { "Color", new PlayerDataObject ( PlayerDataObject.VisibilityOptions.Member, "#FFFFFF")},
                     },
         };
     }
