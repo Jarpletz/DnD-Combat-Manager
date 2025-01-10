@@ -57,7 +57,6 @@ public class LobbyManager : MonoBehaviour
         GUILayout.EndArea();
     }*/
 
-    
     private void Update()
     {
         HandleLobbyHeartbeat();
@@ -85,7 +84,6 @@ public class LobbyManager : MonoBehaviour
         {
             JoinAttemtedEvent?.Invoke(false, "Creating Lobby...");
 
-
             playerName = "Game Master";
             string lobbyName = "MyLobby";
             int maxPlayers = 10;
@@ -99,8 +97,6 @@ public class LobbyManager : MonoBehaviour
                 },
             };
             Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxPlayers, createLobbyOptions);
-
-            Debug.Log("Created Lobby! " + lobby.Name + " " + lobby.MaxPlayers + " " + lobby.Id + " " + lobby.LobbyCode);
 
             hostLobby = lobby;
             joinedLobby = lobby;
@@ -130,7 +126,6 @@ public class LobbyManager : MonoBehaviour
             {
                 heartbeatTimer = 15;
                 await LobbyService.Instance.SendHeartbeatPingAsync(hostLobby.Id);
-                Debug.Log("Heartbeat!");
             }
         }
     }
@@ -194,7 +189,6 @@ public class LobbyManager : MonoBehaviour
                 }
                 catch(LobbyServiceException e)
                 {//if ping fails, disconnect
-                    Debug.LogError(e.Message);
                     joinedLobby = null;
                     hostLobby = null;
                     JoinAttemtedEvent?.Invoke(false, "Lost connection to server: "+e.Message);
@@ -245,7 +239,6 @@ public class LobbyManager : MonoBehaviour
                 Player = GetPlayer(),
             };
             Lobby lobby = await Lobbies.Instance.JoinLobbyByCodeAsync(lobbyCode, joinLobbyByCodeOptions);
-            Debug.Log("Joined Lobby with code " + lobbyCode);
 
             joinedLobby = lobby;
 
@@ -345,7 +338,7 @@ public class LobbyManager : MonoBehaviour
             Debug.LogError(e.Message);
         }
     }
-    public Player GetInstancePlayerInLobby()
+    public Player GetClientPlayerInLobby()
     {
         if (joinedLobby == null) return null;
 

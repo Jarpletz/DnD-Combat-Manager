@@ -81,7 +81,7 @@ public class InLobbyUI : MonoBehaviour
         playerSettingsObject.SetActive(!isGM);
 
         //Client player settings
-        Player instancePlayer  = LobbyManager.Instance.GetInstancePlayerInLobby();
+        Player instancePlayer  = LobbyManager.Instance.GetClientPlayerInLobby();
         if (instancePlayer!= null)
         {
             if (!characterNameField.isFocused)
