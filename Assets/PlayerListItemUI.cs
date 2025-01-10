@@ -12,13 +12,6 @@ public class PlayerListItemUI : MonoBehaviour
 
     string playerId;
 
-    private void Start()
-    {
-/*        nameText.text = "Player Name";
-        colorImage.color = Color.white;
-        kickButtonObject.SetActive(false);*/
-    }
-
     public void SetUp(Player player)
     {
         if (player == null) return;

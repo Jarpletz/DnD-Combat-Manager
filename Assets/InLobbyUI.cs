@@ -8,6 +8,12 @@ using UnityEngine.UI;
 
 public class InLobbyUI : MonoBehaviour
 {
+    private class ColorButton
+    {
+        public Color color;
+        public GameObject buttonObject;
+    }
+
     [Header ("Title")]
     [SerializeField] TextMeshProUGUI encounterNameTitle;
     [SerializeField] TMP_InputField gameCodeText;
@@ -26,7 +32,7 @@ public class InLobbyUI : MonoBehaviour
     [SerializeField] GameObject colorButtonPrefab;
     [SerializeField] Transform colorButtonsParent;
     [SerializeField] List<Color> possibleColors = new List<Color>();
-    [SerializeField] List<GameObject> colorButtons = new List<GameObject>();
+    List<ColorButton> colorButtons = new List<ColorButton>();
 
     [Header("GM Settings")]
     [SerializeField] TMP_InputField encounterNameField;
@@ -49,9 +55,14 @@ public class InLobbyUI : MonoBehaviour
     {
         foreach(Color c in possibleColors)
         {
-            GameObject colorButton = Instantiate(colorButtonPrefab, colorButtonsParent);
-            colorButton.GetComponent<Image>().color = c;
-            colorButton.GetComponent<Button>().onClick.AddListener(delegate{ UpdatePlayerColor(c); });
+            GameObject colorButtonObject = Instantiate(colorButtonPrefab, colorButtonsParent);
+            colorButtonObject.GetComponent<Image>().color = c;
+            colorButtonObject.GetComponent<Button>().onClick.AddListener(delegate{ UpdatePlayerColor(c); });
+
+            ColorButton colorButton = new ColorButton();
+            colorButton.color = c;
+            colorButton.buttonObject = colorButtonObject;
+
             colorButtons.Add(colorButton);
         }
     }
@@ -85,10 +96,20 @@ public class InLobbyUI : MonoBehaviour
             encounterNameField.text = lobby.Data["EncounterName"].Value;
         }
 
-        //Color settings
-        foreach(GameObject colorButton in colorButtons)
+        //Color settings: disable a button if a player has selected that color
+        foreach(ColorButton colorButton in colorButtons)
         {
-           
+            bool buttonIsInteractable = true;
+            
+            foreach(Player p in lobby.Players)
+            {
+                if (p.Data["Color"].Value == "#" + colorButton.color.ToHexString())
+                {
+                    buttonIsInteractable = false;
+                }
+            }
+
+            colorButton.buttonObject.GetComponent<Button>().interactable = buttonIsInteractable;
         }
 
         UpdatePlayerListInformation(lobby.Players);
@@ -118,6 +139,9 @@ public class InLobbyUI : MonoBehaviour
 
     void UpdatePlayerListInformation(List<Player> updatedPlayers)
     {
+        //remove the GM from the list of players
+        //updatedPlayers.Remove(updatedPlayers.Find(p => LobbyManager.Instance.IsPlayerHost(p.Id)));
+
         if(updatedPlayers.Count != playerListUIs.Count)
         {
             RegeneratePlayerList(updatedPlayers);

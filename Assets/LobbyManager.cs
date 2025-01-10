@@ -5,14 +5,15 @@ using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
+using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEditor.PhysicsVisualizationSettings;
 using QueryFilter = Unity.Services.Lobbies.Models.QueryFilter;
 
 public class LobbyManager : MonoBehaviour
 {
     public string playerName;
     public string encounterName;
+    [SerializeField] Color defaultColor;
     public Lobby joinedLobby;
 
     private Lobby hostLobby;
@@ -290,7 +291,7 @@ public class LobbyManager : MonoBehaviour
             Data = new Dictionary<string, PlayerDataObject>
                     {
                         { "PlayerName", new PlayerDataObject( PlayerDataObject.VisibilityOptions.Public, playerName) },
-                        { "Color", new PlayerDataObject ( PlayerDataObject.VisibilityOptions.Member, "#ABED25")},
+                        { "Color", new PlayerDataObject ( PlayerDataObject.VisibilityOptions.Member, "#"+defaultColor.ToHexString())},
                     },
         };
     }
@@ -301,6 +302,13 @@ public class LobbyManager : MonoBehaviour
 
         return joinedLobby.HostId == AuthenticationService.Instance.PlayerId;
     }
+    public bool IsPlayerHost(string playerId)
+    {
+        if (joinedLobby == null) return false;
+
+        return joinedLobby.HostId == playerId;
+    }
+
     public async void UpdatePlayerName(string newPlayerName)
     {
         try
