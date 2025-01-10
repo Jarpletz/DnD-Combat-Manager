@@ -7294,6 +7294,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerName: Player
   encounterName: Unnamed Encounter
+  defaultColor: {r: 0.515584, g: 0.44071907, b: 0.5320754, a: 1}
 --- !u!4 &2064457480
 Transform:
   m_ObjectHideFlags: 0
