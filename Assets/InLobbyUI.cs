@@ -118,8 +118,6 @@ public class InLobbyUI : MonoBehaviour
 
     void RegeneratePlayerList(List<Player> updatedPlayers)
     {
-        Debug.Log("Regenerating Player List!");
-
         //whipe the old list
         playerListUIs.Clear();
         foreach (Transform child in scrollContentObject.transform)

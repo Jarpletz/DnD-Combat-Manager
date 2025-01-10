@@ -331,7 +331,6 @@ public class LobbyManager : MonoBehaviour
                         { "Color", new PlayerDataObject( PlayerDataObject.VisibilityOptions.Member, newColorHexCode) }
                     },
             });
-            Debug.Log("Color Updated!");
         }
         catch (LobbyServiceException e)
         {
