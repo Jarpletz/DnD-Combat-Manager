@@ -290,7 +290,7 @@ public class LobbyManager : MonoBehaviour
             Data = new Dictionary<string, PlayerDataObject>
                     {
                         { "PlayerName", new PlayerDataObject( PlayerDataObject.VisibilityOptions.Public, playerName) },
-                        { "Color", new PlayerDataObject ( PlayerDataObject.VisibilityOptions.Member, "#FFFFFF")},
+                        { "Color", new PlayerDataObject ( PlayerDataObject.VisibilityOptions.Member, "#ABED25")},
                     },
         };
     }
@@ -319,7 +319,24 @@ public class LobbyManager : MonoBehaviour
             Debug.LogError(e.Message);
         }
     }
-
+    public async void UpdatePlayerColor(string newColorHexCode)
+    {
+        try
+        {
+            joinedLobby = await LobbyService.Instance.UpdatePlayerAsync(joinedLobby.Id, AuthenticationService.Instance.PlayerId, new UpdatePlayerOptions
+            {
+                Data = new Dictionary<string, PlayerDataObject>
+                    {
+                        { "Color", new PlayerDataObject( PlayerDataObject.VisibilityOptions.Member, newColorHexCode) }
+                    },
+            });
+            Debug.Log("Color Updated!");
+        }
+        catch (LobbyServiceException e)
+        {
+            Debug.LogError(e.Message);
+        }
+    }
     public Player GetInstancePlayerInLobby()
     {
         if (joinedLobby == null) return null;

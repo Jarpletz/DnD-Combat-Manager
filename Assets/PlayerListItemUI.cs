@@ -30,6 +30,10 @@ public class PlayerListItemUI : MonoBehaviour
         {
             colorImage.color = imageColor;
         }
+        else
+        {
+            Debug.LogWarning("Unable to parse color " + hexColor);
+        }
 
         kickButtonObject.SetActive(LobbyManager.Instance.IsPlayerHost());
 

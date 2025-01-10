@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.Services.Lobbies.Models;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class InLobbyUI : MonoBehaviour
 {
@@ -21,7 +23,10 @@ public class InLobbyUI : MonoBehaviour
 
     [Header("Player Settings")]
     [SerializeField] TMP_InputField characterNameField;
+    [SerializeField] GameObject colorButtonPrefab;
+    [SerializeField] Transform colorButtonsParent;
     [SerializeField] List<Color> possibleColors = new List<Color>();
+    [SerializeField] List<GameObject> colorButtons = new List<GameObject>();
 
     [Header("GM Settings")]
     [SerializeField] TMP_InputField encounterNameField;
@@ -31,12 +36,24 @@ public class InLobbyUI : MonoBehaviour
     private void Start()
     {
         LobbyManager.UpdatedLobbyInfoEvent += UpdateInfo;
+        GenerateColorButtons();
     }
 
     private void OnDestroy()
     {
         LobbyManager.UpdatedLobbyInfoEvent -= UpdateInfo;
 
+    }
+
+    void GenerateColorButtons()
+    {
+        foreach(Color c in possibleColors)
+        {
+            GameObject colorButton = Instantiate(colorButtonPrefab, colorButtonsParent);
+            colorButton.GetComponent<Image>().color = c;
+            colorButton.GetComponent<Button>().onClick.AddListener(delegate{ UpdatePlayerColor(c); });
+            colorButtons.Add(colorButton);
+        }
     }
 
     void UpdateInfo(Lobby lobby)
@@ -52,7 +69,7 @@ public class InLobbyUI : MonoBehaviour
         gmSettingsObject.SetActive(isGM);
         playerSettingsObject.SetActive(!isGM);
 
-        //player settings
+        //Client player settings
         Player instancePlayer  = LobbyManager.Instance.GetInstancePlayerInLobby();
         if (instancePlayer!= null)
         {
@@ -68,7 +85,12 @@ public class InLobbyUI : MonoBehaviour
             encounterNameField.text = lobby.Data["EncounterName"].Value;
         }
 
-        
+        //Color settings
+        foreach(GameObject colorButton in colorButtons)
+        {
+           
+        }
+
         UpdatePlayerListInformation(lobby.Players);
 ;
     }
@@ -122,6 +144,10 @@ public class InLobbyUI : MonoBehaviour
             LobbyManager.Instance.UpdatePlayerName(newName);
         }
     }
+    public void UpdatePlayerColor(Color color)
+    {
+        LobbyManager.Instance.UpdatePlayerColor("#" + color.ToHexString());
+    }
     public void UpdateEncounterName()
     {
         string newName = encounterNameField.text;
@@ -130,4 +156,7 @@ public class InLobbyUI : MonoBehaviour
             LobbyManager.Instance.UpdateEncounterName(newName);
         }
     }
+
+    
+
 }
