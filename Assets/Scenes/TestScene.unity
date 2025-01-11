@@ -1115,6 +1115,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1386449390148735899, guid: 12de4ca05b7285f4d96cea388973ef38, type: 3}
+      propertyPath: m_ProtocolType
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1760996234918987341, guid: 12de4ca05b7285f4d96cea388973ef38, type: 3}
       propertyPath: m_LocalPosition.x
       value: -3.8551147
@@ -1154,6 +1158,14 @@ PrefabInstance:
     - target: {fileID: 1760996234918987341, guid: 12de4ca05b7285f4d96cea388973ef38, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2127659045494127739, guid: 12de4ca05b7285f4d96cea388973ef38, type: 3}
+      propertyPath: NetworkConfig.PlayerPrefab
+      value: 
+      objectReference: {fileID: 2944203133419143528, guid: 84d27bd8345e7204fa6e6465a3eaeed3, type: 3}
+    - target: {fileID: 5496223468446392008, guid: 12de4ca05b7285f4d96cea388973ef38, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7603672958217568691, guid: 12de4ca05b7285f4d96cea388973ef38, type: 3}
       propertyPath: m_Name
