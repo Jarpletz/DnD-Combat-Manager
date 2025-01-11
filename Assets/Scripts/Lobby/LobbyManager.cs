@@ -46,6 +46,7 @@ public class LobbyManager : MonoBehaviour
 
     void Start()
     {
+
         String userName = "Player"+UnityEngine.Random.Range(0, 9000).ToString();
         Authenticate(userName.ToString());
 
@@ -60,6 +61,15 @@ public class LobbyManager : MonoBehaviour
 
         GUILayout.EndArea();
     }*/
+
+    private void OnDestroy()
+    {
+        if(NetworkManager.Singleton != null)
+        {
+            NetworkManager.Singleton.OnClientConnectedCallback -= AddClientToPlayerList;
+        }
+
+    }
 
     private void Update()
     {
@@ -196,8 +206,10 @@ public class LobbyManager : MonoBehaviour
                 });
 
                 connectedToRelay = true;
-                //set the connection data to contain the lobby player id
-                string playerId = AuthenticationService.Instance.PlayerId;
+
+                //send player data
+                AddClientToPlayerList(0);
+
             }
             catch(LobbyServiceException e)
             {
@@ -229,6 +241,8 @@ public class LobbyManager : MonoBehaviour
                             //join the relay 
                             await RelayManager.Instance.JoinRelay(joinedLobby.Data["RelayCode"].Value);
                             connectedToRelay = true;
+                            //subscribe to send player data
+                            NetworkManager.Singleton.OnClientConnectedCallback += AddClientToPlayerList;
                         }
                     }
                 }
@@ -403,6 +417,18 @@ public class LobbyManager : MonoBehaviour
 
     }
 
+    private void AddClientToPlayerList(ulong clientId)
+    {
+        if (clientId == NetworkManager.Singleton.LocalClientId)
+        {
+            Debug.Log($"Client connected with ID: {clientId}");
+            PlayerInfoManager.Instance.AddPlayerInfo(clientId, GetClientPlayerInLobby());
+
+
+            // Unsubscribe to avoid duplicate calls
+            NetworkManager.Singleton.OnClientConnectedCallback -= AddClientToPlayerList;
+        }
+    }
 
     #endregion
 }

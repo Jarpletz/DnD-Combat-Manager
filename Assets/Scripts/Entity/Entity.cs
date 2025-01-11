@@ -28,6 +28,8 @@ public class Entity : NetworkBehaviour
     [SerializeField] TextMeshPro statusText;
     public override void OnNetworkSpawn()
     {
+        base.OnNetworkSpawn();
+
         if (IsServer)
         {
             updateName(initialName);
@@ -45,9 +47,8 @@ public class Entity : NetworkBehaviour
         //add to the Entity Manager
         EntityManager.Instance.entities.Add(this);
 
-        
+        nameTag.text = getEntityName();
 
-        base.OnNetworkSpawn();
     }
 
     public override void OnDestroy()
@@ -66,7 +67,13 @@ public class Entity : NetworkBehaviour
         }
     }
 
-    
+    private void Update()
+    {
+        if(nameTag.text != getEntityName())
+        {
+            nameTag.text = getEntityName();
+        }
+    }
 
     public string getEntityName()
     {
@@ -88,6 +95,17 @@ public class Entity : NetworkBehaviour
     void updateNameServerRpc(string newName)
     {
         entityName.Value = newName;
+        nameTag.text = newName;
+        Debug.Log("Update Nametag Server RPC");
+
+        updateNametagClientRpc(newName);
+
+    }
+    [ClientRpc]
+    void updateNametagClientRpc(string newName)
+    {
+        nameTag.text = newName;
+        Debug.Log("Update Nametag Client RPC");
     }
 
     public string getEntityColor()

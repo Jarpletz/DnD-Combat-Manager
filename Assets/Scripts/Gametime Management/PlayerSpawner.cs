@@ -23,7 +23,7 @@ public class PlayerSpawner : NetworkBehaviour
     {
         if (NetworkManager.Singleton.IsServer)
         {
-            NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
+            PlayerInfoManager.onPlayerAddedCallback += SpawnPlayerForClient;
             SpawnPlayersForConnectedClients();
         }
     }
@@ -32,48 +32,36 @@ public class PlayerSpawner : NetworkBehaviour
     {
         if (NetworkManager.Singleton && NetworkManager.Singleton.IsServer)
         {
-            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+            PlayerInfoManager.onPlayerAddedCallback -= SpawnPlayerForClient;
+
         }
         base.OnDestroy();
     }
 
-    private void OnClientConnected(ulong clientId)
-    {
-        SpawnPlayerForClient(clientId);
-    }
-
     private void SpawnPlayersForConnectedClients()
     {
-        foreach (var clientId in NetworkManager.Singleton.ConnectedClientsIds)
+        foreach (var playerInfo in PlayerInfoManager.Instance.m_players)
         {
-            SpawnPlayerForClient(clientId);
+            SpawnPlayerForClient(playerInfo);
         }
     }
 
-    private void SpawnPlayerForClient(ulong clientId)
+    private void SpawnPlayerForClient(PlayerInfoManager.PlayerInfo playerInfo)
     {
         if (!IsServer) return;
 
-        var spawnPosition = GetSpawnPosition(clientId); // Implement logic to determine spawn position
+        Debug.Log("Spawning Player for " + playerInfo.clientId);
+
+        var spawnPosition = GetSpawnPosition(playerInfo.clientId); // Implement logic to determine spawn position
         var playerInstance = Instantiate(playerPrefab, spawnPosition, Quaternion.identity);
         var networkObject = playerInstance.GetComponent<NetworkObject>();
-        networkObject.SpawnAsPlayerObject(clientId, true);
+        networkObject.SpawnAsPlayerObject(playerInfo.clientId, true);
 
         if (networkObject.IsSpawned)
         {
-           /* var entity = playerInstance.GetComponent<Entity>();
-
-            Debug.Log(clientId + " " + playerInfo);
-           
-            Color c;
-            string lobbyId = System.Text.Encoding.UTF8.GetString(NetworkManager.Singleton.NetworkConfig.ConnectionData);
-
-            Player lobbyPlayer = LobbyManager.Instance.GetPlayersInLobby().Find(p=>p.Id = )
-
-            if (ColorUtility.TryParseHtmlString(playerInfo.colorString, out c))
-            {
-                entity.updateColor(c);
-            }*/
+           var entity = playerInstance.GetComponent<Entity>();
+            entity.updateColor(playerInfo.GetColor());
+            entity.updateName(playerInfo.name);
         }
     }
 
