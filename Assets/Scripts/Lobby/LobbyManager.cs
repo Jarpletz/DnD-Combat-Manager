@@ -19,6 +19,7 @@ public class LobbyManager : MonoBehaviour
     private Lobby hostLobby;
     private float heartbeatTimer;
     private float pollTimeer;
+    private bool connectedToRelay = false;
 
     //Events
     public delegate void OnJoinedLobbyUpdated(Lobby joinedLobby);
@@ -35,7 +36,10 @@ public class LobbyManager : MonoBehaviour
     private void Awake()
     {
         if (Instance == null)
+        {
             Instance = this;
+            DontDestroyOnLoad(transform.gameObject);
+        }
         else
             Destroy(gameObject);
     }
@@ -93,7 +97,8 @@ public class LobbyManager : MonoBehaviour
                 Player = GetPlayer(),
                 Data = new Dictionary<string, DataObject>
                 {
-                        { "EncounterName", new DataObject( DataObject.VisibilityOptions.Member, encounterName) }
+                        { "EncounterName", new DataObject( DataObject.VisibilityOptions.Member, encounterName) },
+                        { "RelayCode", new DataObject( DataObject.VisibilityOptions.Member,"0")}
                 },
             };
             Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxPlayers, createLobbyOptions);
@@ -171,6 +176,36 @@ public class LobbyManager : MonoBehaviour
             Debug.LogError(e.Message);
         }
     }
+    
+    public async void StartGame()
+    {
+        if (IsPlayerHost())
+        {
+            try
+            {
+                Debug.Log("Starting Game!");
+
+                string relayCode = await RelayManager.Instance.CreateRelay();
+
+                joinedLobby = await Lobbies.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions
+                {
+                    Data = new Dictionary<string, DataObject>
+                    {
+                        { "RelayCode", new DataObject(DataObject.VisibilityOptions.Member,relayCode) }
+                    }
+                });
+
+                connectedToRelay = true;
+                //set the connection data to contain the lobby player id
+                string playerId = AuthenticationService.Instance.PlayerId;
+            }
+            catch(LobbyServiceException e)
+            {
+                Debug.LogWarning(e);
+            }
+        }
+    }
+    
     #endregion
 
     #region Lobby Joining
@@ -186,6 +221,16 @@ public class LobbyManager : MonoBehaviour
                 {
                     joinedLobby = await LobbyService.Instance.GetLobbyAsync(joinedLobby.Id);
                     UpdatedLobbyInfoEvent?.Invoke(joinedLobby);
+
+                    if (!connectedToRelay && joinedLobby.Data["RelayCode"].Value != "0")
+                    {// if there is a relay code, start the game by connecting to relay!
+                        if (!IsPlayerHost())
+                        {
+                            //join the relay 
+                            await RelayManager.Instance.JoinRelay(joinedLobby.Data["RelayCode"].Value);
+                            connectedToRelay = true;
+                        }
+                    }
                 }
                 catch(LobbyServiceException e)
                 {//if ping fails, disconnect
@@ -288,7 +333,11 @@ public class LobbyManager : MonoBehaviour
                     },
         };
     }
-
+    public List<Player> GetPlayersInLobby()
+    {
+        if (joinedLobby == null) return null;
+        return joinedLobby.Players;
+    }
     public bool IsPlayerHost()
     {
         if (joinedLobby == null) return false;
@@ -357,4 +406,3 @@ public class LobbyManager : MonoBehaviour
 
     #endregion
 }
-

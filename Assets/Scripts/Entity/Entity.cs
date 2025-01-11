@@ -1,11 +1,17 @@
 using TMPro;
 using Unity.Collections;
 using Unity.Netcode;
+using Unity.Services.Authentication;
+using Unity.VisualScripting;
 using UnityEngine;
+using ColorUtility = UnityEngine.ColorUtility;
+
 public class Entity : NetworkBehaviour
 {
     [Header ("Network Variables")]
     public NetworkVariable<FixedString64Bytes> entityName = new NetworkVariable<FixedString64Bytes>("");
+    public NetworkVariable<FixedString64Bytes> entityColor = new NetworkVariable<FixedString64Bytes>("#FFF");
+
     public NetworkVariable<int> health = new NetworkVariable<int>(0);
     public NetworkVariable<int> maxHealth = new NetworkVariable<int>(0);
     
@@ -24,7 +30,7 @@ public class Entity : NetworkBehaviour
     {
         if (IsServer)
         {
-            updateName(initialName + " "+OwnerClientId.ToString());
+            updateName(initialName);
             health.Value = 0;
             maxHealth.Value = 0;
             initiative.Value = 0;
@@ -60,6 +66,8 @@ public class Entity : NetworkBehaviour
         }
     }
 
+    
+
     public string getEntityName()
     {
         return entityName.Value.Value;
@@ -80,6 +88,29 @@ public class Entity : NetworkBehaviour
     void updateNameServerRpc(string newName)
     {
         entityName.Value = newName;
+    }
+
+    public string getEntityColor()
+    {
+        return entityColor.Value.Value;
+    }
+    public void updateColor(Color color)
+    {
+        if (IsServer)
+        {
+            entityColor.Value = "#" +  color.ToHexString();
+        }
+        else
+        {
+            updateColorServerRpc("#" + color.ToHexString());
+        }
+
+        
+    }
+    [ServerRpc]
+    void updateColorServerRpc(string newColor)
+    {
+        entityColor.Value = newColor;
     }
 
     public void updateIntitative(int newInitiative)

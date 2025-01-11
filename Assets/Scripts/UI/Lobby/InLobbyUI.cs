@@ -48,7 +48,6 @@ public class InLobbyUI : MonoBehaviour
     private void OnDestroy()
     {
         LobbyManager.UpdatedLobbyInfoEvent -= UpdateInfo;
-
     }
 
     void GenerateColorButtons()
@@ -179,6 +178,9 @@ public class InLobbyUI : MonoBehaviour
         }
     }
 
-    
+    public void StartGame()
+    {
+        LobbyManager.Instance.StartGame();
+    }
 
 }
