@@ -260,7 +260,7 @@ public class MovableObject : NetworkBehaviour
         // Does the ray intersect any objects excluding the player layer
         Vector3 rayStart = new Vector3(x, 1000f, z);
 
-        if (Physics.Raycast(rayStart, transform.TransformDirection(Vector3.down), out hit, Mathf.Infinity, groundMask))
+        if (Physics.Raycast(rayStart, Vector3.down, out hit, Mathf.Infinity, groundMask))
         {
             return hit.point.y + footOffsetDistance;
         }

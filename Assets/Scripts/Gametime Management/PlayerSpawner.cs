@@ -50,10 +50,10 @@ public class PlayerSpawner : NetworkBehaviour
     {
         if (!IsServer) return;
 
-        Debug.Log("Spawning Player for " + playerInfo.clientId);
-
         var spawnPosition = GetSpawnPosition(playerInfo.clientId); // Implement logic to determine spawn position
-        var playerInstance = Instantiate(playerPrefab, spawnPosition, Quaternion.identity);
+        var playerInstance = Instantiate(playerPrefab);
+        playerInstance.transform.position = spawnPosition;
+
         var networkObject = playerInstance.GetComponent<NetworkObject>();
         networkObject.SpawnAsPlayerObject(playerInfo.clientId, true);
 

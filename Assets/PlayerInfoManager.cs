@@ -109,8 +109,6 @@ public class PlayerInfoManager : NetworkBehaviour
         {
             m_players.Add(playerInfo);
             onPlayerAddedCallback?.Invoke(playerInfo);
-            Debug.Log("Adding Player Info to Server: Client ID " + playerInfo.clientId);
-
         }
         else
         {
@@ -121,8 +119,6 @@ public class PlayerInfoManager : NetworkBehaviour
     [ServerRpc (RequireOwnership =false)]
     private void AddPlayerInfoServerRpc(PlayerInfo playerInfo)
     {
-        Debug.Log("Adding Player Info to Server: Client ID " + playerInfo.clientId);
-
 
         m_players.Add(playerInfo);
         onPlayerAddedCallback?.Invoke(playerInfo);

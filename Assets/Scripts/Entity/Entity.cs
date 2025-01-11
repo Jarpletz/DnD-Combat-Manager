@@ -96,8 +96,6 @@ public class Entity : NetworkBehaviour
     {
         entityName.Value = newName;
         nameTag.text = newName;
-        Debug.Log("Update Nametag Server RPC");
-
         updateNametagClientRpc(newName);
 
     }
@@ -105,7 +103,6 @@ public class Entity : NetworkBehaviour
     void updateNametagClientRpc(string newName)
     {
         nameTag.text = newName;
-        Debug.Log("Update Nametag Client RPC");
     }
 
     public string getEntityColor()
