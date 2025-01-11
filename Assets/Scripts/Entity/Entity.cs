@@ -105,9 +105,16 @@ public class Entity : NetworkBehaviour
         nameTag.text = newName;
     }
 
-    public string getEntityColor()
+    public Color getEntityColor()
     {
-        return entityColor.Value.Value;
+        Color c;
+
+        if (ColorUtility.TryParseHtmlString(entityColor.Value.Value, out c))
+        {
+            return c;
+        }
+
+        return Color.white;
     }
     public void updateColor(Color color)
     {
