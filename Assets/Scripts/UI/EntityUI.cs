@@ -20,16 +20,18 @@ public class EntityUI : MonoBehaviour
     [SerializeField] GameObject flyingControls;
     [SerializeField] TextMeshProUGUI flyingHeightDisplay;
     [SerializeField] Toggle flyingToggle;
+    [Header("Prone")]
+    [SerializeField] Toggle proneToggle;
 
 
-  
+
 
     public void OnDestroy()
     {
         if (moveable)
         {
             // Unsubscribe from the flying callback
-            moveable.OnFlyingStateChanged -= UpdateFlyingToggle;
+            moveable.OnFlyingStateChangedCallback -= UpdateFlyingToggle;
         }
 
     }
@@ -48,7 +50,7 @@ public class EntityUI : MonoBehaviour
             moveable = entity.gameObject.GetComponent<MovableObject>();
 
             //subscribe to watch the flying stuff
-            moveable.OnFlyingStateChanged += UpdateFlyingToggle;
+            moveable.OnFlyingStateChangedCallback += UpdateFlyingToggle;
             UpdateFlyingToggle(moveable.GetIsFlying());
 
             nameText.text = entity.getEntityName();
@@ -61,7 +63,7 @@ public class EntityUI : MonoBehaviour
         entity = null;
         if (moveable)
         {
-            moveable.OnFlyingStateChanged -= UpdateFlyingToggle;
+            moveable.OnFlyingStateChangedCallback -= UpdateFlyingToggle;
             moveable = null;
 
         }
@@ -77,11 +79,34 @@ public class EntityUI : MonoBehaviour
             Debug.LogWarning("Format Error Updating Initiative:" + e.Message);
         }
     }
+    private void Update()
+    {
+        UpdateTurnDisplay();
+        UpdateMovementDisplay();
+        UpdateFlyingDisplay();
+    }
+
+    #region turns
     public void HandleEndTurn()
     {
         ConfirmEntityMovement();
         EntityManager.Instance.IncrementTurn();
     }
+    private void UpdateTurnDisplay()
+    {
+        if (EntityManager.Instance && EntityManager.Instance.IsCurrentEntity(entity))
+        {
+            turnObject.SetActive(true);
+        }
+        else
+        {
+            turnObject.SetActive(false);
+        }
+    }
+    #endregion
+
+    #region movement
+
     public void CancelEntityMovement()
     {
         if (moveable == null) return;
@@ -94,48 +119,6 @@ public class EntityUI : MonoBehaviour
 
         moveable.ConfirmMovement();
     }
-
-    public void MovableFlyUp()
-    {
-        if (moveable)
-        {
-            moveable.FlyUp();
-        }
-    }
-    public void MovableFlyDown()
-    {  
-        if (moveable)
-        {
-            moveable.FlyDown();
-        }
-    }
-    public void ToggleFlying(Toggle change)
-    {
-        if (moveable)
-        {
-            moveable.ToggleIsFlying(change.isOn);
-        }
-    }
-
-    private void Update()
-    {
-        UpdateTurnDisplay();
-        UpdateMovementDisplay();
-        UpdateFlyingDisplay();
-    }
-
-    private void UpdateTurnDisplay()
-    {
-        if (EntityManager.Instance && EntityManager.Instance.IsCurrentEntity(entity))
-        {
-            turnObject.SetActive(true);
-        }
-        else
-        {
-            turnObject.SetActive(false);
-        }
-    }
-   
     private void UpdateMovementDisplay()
     {
         if(!moveable || !moveable.HasUnconfirmedMovement())
@@ -148,7 +131,30 @@ public class EntityUI : MonoBehaviour
             distanceMovedText.text = "Distance Moved ( Raw) : " + moveable.GetUnconfirmmedDistance().ToString("0") + "ft.";
         }
     }
+    #endregion
 
+    #region flying
+    public void MovableFlyUp()
+    {
+        if (moveable)
+        {
+            moveable.FlyUp();
+        }
+    }
+    public void MovableFlyDown()
+    {
+        if (moveable)
+        {
+            moveable.FlyDown();
+        }
+    }
+    public void ToggleFlying(Toggle change)
+    {
+        if (moveable)
+        {
+            moveable.ToggleIsFlying(change.isOn);
+        }
+    }
     private void UpdateFlyingDisplay()
     {
         bool isFlying = moveable && moveable.GetIsFlying();
@@ -162,4 +168,5 @@ public class EntityUI : MonoBehaviour
         flyingControls.SetActive(isFlying);
         flyingToggle.isOn = isFlying;
     }
+    #endregion
 }

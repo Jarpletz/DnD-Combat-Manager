@@ -888,10 +888,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7571492077865500624, guid: 83fbaa24b3d80fd4891d6903f8f3146a, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: -1.6727295
-      objectReference: {fileID: 0}
     - target: {fileID: 7682495733979601426, guid: 83fbaa24b3d80fd4891d6903f8f3146a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 

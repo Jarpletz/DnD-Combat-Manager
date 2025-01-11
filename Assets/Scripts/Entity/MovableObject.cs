@@ -18,14 +18,22 @@ public class MovableObject : NetworkBehaviour
     [Header ("Network Variables")]
     public NetworkVariable<Vector3> Position = new NetworkVariable<Vector3>();
     [SerializeField] private NetworkVariable<bool> IsFlying = new NetworkVariable<bool> ();
+    [SerializeField] private NetworkVariable<bool> IsProne = new NetworkVariable<bool>();
+
     public delegate void FlyingStateChanged(bool isFlying);
-    public event FlyingStateChanged OnFlyingStateChanged;
+    public event FlyingStateChanged OnFlyingStateChangedCallback; 
+    public delegate void ProneStateChanged(bool isFlying);
+    public event ProneStateChanged OnProneStateChangedCallback;
 
     private void Awake()
     {
         IsFlying.OnValueChanged += (oldValue, newValue) =>
         {
-            OnFlyingStateChanged?.Invoke(newValue);
+            OnFlyingStateChangedCallback?.Invoke(newValue);
+        };
+        IsProne.OnValueChanged += (oldValue, newValue) =>
+        {
+            OnProneStateChangedCallback?.Invoke(newValue);
         };
     }
 
@@ -94,14 +102,15 @@ public class MovableObject : NetworkBehaviour
             Debug.Log("Cannot move, sice you aren't the server!");
             return;
         }
-        if (EntityManager.Instance.canMoveToCell(gameObject,newPosition))
+        if (EntityManager.Instance.canMoveToCell(gameObject, newPosition))
         {
             Position.Value = newPosition;
             transform.position = newPosition;
 
         }
     }
-
+    
+    #region flying
     public void ToggleIsFlying(bool newValue)
     {
         if (IsServer)
@@ -138,7 +147,6 @@ public class MovableObject : NetworkBehaviour
             Debug.LogWarning(e.Message);
         }
     }
-
     public bool GetIsFlying()
     {
         return IsFlying.Value;
@@ -171,6 +179,32 @@ public class MovableObject : NetworkBehaviour
         }
         Move(newPosition);
     }
+    #endregion
+
+   
+    #region Prone
+    public void ToggleIsProne(bool newValue)
+    {
+        if (IsServer)
+        {
+            IsProne.Value = newValue;
+        }
+        else
+        {
+            ToggleIsProneServerRpc(newValue);
+        }
+    }
+    [ServerRpc]
+    private void ToggleIsProneServerRpc(bool newValue)
+    {
+        IsProne.Value = newValue;
+    }
+    public bool GetIsProne()
+    {
+        return IsFlying.Value;
+    }
+    #endregion
+
 
     void OnMouseDown()
     {
