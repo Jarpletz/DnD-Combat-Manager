@@ -88,6 +88,9 @@ public class PlayerInfoManager : NetworkBehaviour
 
     public void AddPlayerInfo(ulong clientId, Player lobbyPlayer)
     {
+        //dont add a player for the server
+        if (NetworkManager.Singleton.IsServer && !NetworkManager.Singleton.IsHost) return;
+
         PlayerInfo playerInfo = new PlayerInfo();
         playerInfo.clientId = clientId;
         playerInfo.color = lobbyPlayer.Data["Color"].Value;
