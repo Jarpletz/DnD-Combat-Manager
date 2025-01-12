@@ -92,7 +92,6 @@ public class MovableObject : NetworkBehaviour
 
     void Move(Vector3 position)
     {
-        Debug.Log("Moved"); 
         if (IsServer)
         {
             if (EntityManager.Instance.canMoveToCell(gameObject,position))

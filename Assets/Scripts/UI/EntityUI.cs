@@ -8,6 +8,7 @@ public class EntityUI : MonoBehaviour
 {
     public Entity entity;
     private MovableObject moveable;
+    private NPCBehavior npcBehavior;
 
     [Header ("Child Components")]
     [SerializeField] TextMeshProUGUI nameText;
@@ -22,6 +23,9 @@ public class EntityUI : MonoBehaviour
     [SerializeField] Toggle flyingToggle;
     [Header("Prone")]
     [SerializeField] Toggle proneToggle;
+    [Header("NPC")]
+    [SerializeField] GameObject npcObject;
+    [SerializeField] Toggle showNpcToggle;
 
     public void OnDestroy()
     {
@@ -31,7 +35,10 @@ public class EntityUI : MonoBehaviour
             moveable.OnFlyingStateChangedCallback -= UpdateFlyingToggle;
             moveable.OnProneStateChangedCallback -= UpdateProneToggle;
         }
-
+        if (npcBehavior)
+        {
+            npcBehavior.OnShowPlayersChanged -= UpdateShowPlayersToggle;
+        }
     }
 
     public void SetupEntityUI(Entity entity)
@@ -55,8 +62,18 @@ public class EntityUI : MonoBehaviour
             moveable.OnProneStateChangedCallback -= UpdateProneToggle;
             UpdateProneToggle(moveable.GetIsProne());
 
+            //name and initiative
             nameText.text = entity.getEntityName();
             initiativeInputField.text = entity.initiative.Value.ToString();
+
+            //npc stuff
+            npcBehavior = entity.gameObject.GetComponent<NPCBehavior>();
+            npcObject.SetActive(npcBehavior);
+            if(npcBehavior)
+            {
+                npcBehavior.OnShowPlayersChanged += UpdateShowPlayersToggle;
+                UpdateShowPlayersToggle(npcBehavior.ShowPlayers.Value);
+            }
         }
     }
     public void CloseEntityUI()
@@ -67,7 +84,11 @@ public class EntityUI : MonoBehaviour
         {
             moveable.OnFlyingStateChangedCallback -= UpdateFlyingToggle;
             moveable = null;
-
+        }
+        if (npcBehavior)
+        {
+            npcBehavior.OnShowPlayersChanged -= UpdateShowPlayersToggle;
+            npcBehavior = null;
         }
 
     }
@@ -186,5 +207,22 @@ public class EntityUI : MonoBehaviour
         flyingControls.SetActive(isFlying);
         flyingToggle.isOn = isFlying;
     }
+    #endregion
+
+    #region npc
+
+    private void UpdateShowPlayersToggle(bool showNpc)
+    {
+        showNpcToggle.isOn = showNpc;
+    }
+    public void ToggleShowPlayers(Toggle change)
+    {
+        if (npcBehavior)
+        {
+            npcBehavior.ToggleShowPlayers(change.isOn);
+        }
+    }
+
+
     #endregion
 }
