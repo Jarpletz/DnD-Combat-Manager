@@ -114,7 +114,6 @@ public class MeasurementUI : MonoBehaviour
                 newSize = (int)sizeRange.y;
                 sizeField.text = sizeRange.y.ToString();
             }
-
             measuringVolume.UpdateSize(newSize);
 
         }

@@ -27,6 +27,6 @@ public class MeasuringVolumeManager : NetworkBehaviour
 
         // Spawn it across the network
         NetworkObject networkObject = measuringVolume.GetComponent<NetworkObject>();
-        networkObject.SpawnWithOwnership(clientId);
+        networkObject.SpawnWithOwnership(clientId,true);
     }
 }

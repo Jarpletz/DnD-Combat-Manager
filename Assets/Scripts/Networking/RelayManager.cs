@@ -33,7 +33,7 @@ public class RelayManager : MonoBehaviour
 
             RelayServerData relayServerData = new RelayServerData(allocation, "dtls");
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
-            NetworkManager.Singleton.StartHost();
+            NetworkManager.Singleton.StartServer();
 
             return joinCode;
         }
