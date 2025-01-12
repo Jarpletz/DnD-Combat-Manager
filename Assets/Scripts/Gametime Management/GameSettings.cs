@@ -8,6 +8,7 @@ public class GameSettings : MonoBehaviour
     public static GameSettings Instance;
 
     public float distanceScaleMultipler;
+    public float snapOffsetDistance;
 
     private void Awake()
     {

@@ -25,6 +25,7 @@ public class MovableObject : NetworkBehaviour
     public delegate void ProneStateChanged(bool isFlying);
     public event ProneStateChanged OnProneStateChangedCallback;
 
+    [Header ("Set Up")]
     public float proneOffsetDistance;
 
     private Quaternion initialRotation;
@@ -330,8 +331,8 @@ public class MovableObject : NetworkBehaviour
         //get the new position
         Vector3 newPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
         //for x and z, snap to grid
-        newPosition.x = Mathf.Round(newPosition.x);
-        newPosition.z = Mathf.Round(newPosition.z);
+        newPosition.x = roundToSnapOffset(newPosition.x);
+        newPosition.z = roundToSnapOffset(newPosition.z);
         if (IsFlying.Value)
         {
             // if we are flying we dont need to snap to ground.
@@ -384,5 +385,18 @@ public class MovableObject : NetworkBehaviour
             throw new Exception("Ground not found!");
         }
     }
+        
+    float roundToSnapOffset(float number)
+    {
+        float snapOffset = GameSettings.Instance.snapOffsetDistance;
+        double rounded = Math.Round(number / snapOffset) * snapOffset;
 
+        // If the rounded value is a whole number, adjust by snapOffset
+        if (rounded == Math.Round(rounded))
+        {
+            rounded += (number > Math.Round(rounded)) ? snapOffset : -snapOffset;
+        }
+
+        return (float)rounded;
+    }
 }
