@@ -25,6 +25,10 @@ public class MovableObject : NetworkBehaviour
     public delegate void ProneStateChanged(bool isFlying);
     public event ProneStateChanged OnProneStateChangedCallback;
 
+    public float proneOffsetDistance;
+
+    private Quaternion initialRotation;
+
     private void Awake()
     {
         IsFlying.OnValueChanged += (oldValue, newValue) =>
@@ -55,6 +59,9 @@ public class MovableObject : NetworkBehaviour
             }
             previousPosition = Position.Value;
             IsFlying.Value = false;
+            IsProne.Value = false;
+
+            initialRotation = transform.rotation;
         }
        
     }
@@ -75,16 +82,30 @@ public class MovableObject : NetworkBehaviour
     }
     public void CancelMovement()
     {
-        Move(previousPosition);
+        Vector3 cancelPos = previousPosition;
+        if (IsProne.Value)
+        {
+            cancelPos = UndoPronePosition(cancelPos);
+        }
+        Move(cancelPos);
     }
 
     void Move(Vector3 position)
     {
+        Debug.Log("Moved"); 
         if (IsServer)
         {
             if (EntityManager.Instance.canMoveToCell(gameObject,position))
             {
+                Quaternion rotation = initialRotation;
+                if (IsProne.Value)
+                {
+                    position = GetPronePosition(position);
+                    rotation = GetProneRotation();
+                }
+
                 transform.position = position;
+                transform.rotation = rotation;
                 Position.Value = position;
             }
         }
@@ -161,6 +182,10 @@ public class MovableObject : NetworkBehaviour
         if (!IsFlying.Value) return;
         Vector3 newPosition = Position.Value;
         newPosition.y = newPosition.y + 1;
+        if (IsProne.Value)
+        {
+            newPosition = UndoPronePosition(newPosition);
+        }
         Move(newPosition);
     }
     public void FlyDown()
@@ -177,6 +202,10 @@ public class MovableObject : NetworkBehaviour
         {
             newPosition.y = getGroundPosition(newPosition.x,newPosition.z);
         }
+        if (IsProne.Value)//undo effects of prone
+        {
+            newPosition = UndoPronePosition(newPosition);
+        }
         Move(newPosition);
     }
     #endregion
@@ -185,9 +214,20 @@ public class MovableObject : NetworkBehaviour
     #region Prone
     public void ToggleIsProne(bool newValue)
     {
+        Debug.Log("toggled Prone");
+
         if (IsServer)
         {
             IsProne.Value = newValue;
+            if (IsProne.Value)
+            {
+                Move(transform.position);
+            }
+            else
+            {
+                Vector3 newPos = UndoPronePosition(transform.position);
+                Move(newPos);
+            }
         }
         else
         {
@@ -198,11 +238,48 @@ public class MovableObject : NetworkBehaviour
     private void ToggleIsProneServerRpc(bool newValue)
     {
         IsProne.Value = newValue;
+
+        if (IsProne.Value)
+        {
+            Move(transform.position);
+        }
+        else
+        {
+            Vector3 newPos = UndoPronePosition(transform.position);
+            Move(newPos);
+        }
     }
     public bool GetIsProne()
     {
-        return IsFlying.Value;
+        return IsProne.Value;
     }
+    
+    public Vector3 GetPronePosition(Vector3 initialPosition)
+    {
+        float xPos = initialPosition.x;
+        float yPos = initialPosition.y - footOffsetDistance;
+        float zPos = initialPosition.z - proneOffsetDistance;
+
+        return new Vector3(xPos, yPos, zPos);
+    }
+    public Vector3 UndoPronePosition(Vector3 pronePosition)
+    {
+        float xPos = pronePosition.x;
+        float yPos = pronePosition.y + footOffsetDistance;
+        float zPos = pronePosition.z + proneOffsetDistance;
+
+        return new Vector3(xPos, yPos, zPos);
+    }
+    public Quaternion GetProneRotation()
+    {
+        Vector3 oldRotation = initialRotation.eulerAngles;
+        float xRot = oldRotation.x - 90f;
+        float yRot = oldRotation.y;
+        float zRot = oldRotation.z;
+
+        return Quaternion.Euler(xRot, yRot, zRot);
+    }
+    
     #endregion
 
 
@@ -293,6 +370,11 @@ public class MovableObject : NetworkBehaviour
         RaycastHit hit;
         // Does the ray intersect any objects excluding the player layer
         Vector3 rayStart = new Vector3(x, 1000f, z);
+        if (IsProne.Value)
+        {//Adjust ray position if prone
+            rayStart = UndoPronePosition(rayStart);
+        }
+
 
         if (Physics.Raycast(rayStart, Vector3.down, out hit, Mathf.Infinity, groundMask))
         {

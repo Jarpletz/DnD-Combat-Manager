@@ -23,15 +23,13 @@ public class EntityUI : MonoBehaviour
     [Header("Prone")]
     [SerializeField] Toggle proneToggle;
 
-
-
-
     public void OnDestroy()
     {
         if (moveable)
         {
             // Unsubscribe from the flying callback
             moveable.OnFlyingStateChangedCallback -= UpdateFlyingToggle;
+            moveable.OnProneStateChangedCallback -= UpdateProneToggle;
         }
 
     }
@@ -52,6 +50,10 @@ public class EntityUI : MonoBehaviour
             //subscribe to watch the flying stuff
             moveable.OnFlyingStateChangedCallback += UpdateFlyingToggle;
             UpdateFlyingToggle(moveable.GetIsFlying());
+
+            //prone
+            moveable.OnProneStateChangedCallback -= UpdateProneToggle;
+            UpdateProneToggle(moveable.GetIsProne());
 
             nameText.text = entity.getEntityName();
             initiativeInputField.text = entity.initiative.Value.ToString();
@@ -85,6 +87,22 @@ public class EntityUI : MonoBehaviour
         UpdateMovementDisplay();
         UpdateFlyingDisplay();
     }
+
+    #region prone
+
+    private void UpdateProneToggle(bool isOn)
+    {
+        proneToggle.isOn = isOn;
+    }
+    public void ToggleIsProne(Toggle toggle)
+    {
+        if (moveable)
+        {
+            moveable.ToggleIsProne(toggle.isOn);
+        }
+    }
+
+    #endregion
 
     #region turns
     public void HandleEndTurn()
