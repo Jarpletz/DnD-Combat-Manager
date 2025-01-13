@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -16,18 +16,18 @@ public class PlayerInfoUI : UIInfo
             NPCBehavior npcBehavior = currentEntity.GetComponent<NPCBehavior>();
             if(npcBehavior && !npcBehavior.ShowPlayers.Value)
             {
-                currentPlayerText.text = GetRandomString(currentEntity.getEntityName().Length);
+                currentPlayerText.text = GetRandomString(currentEntity.GetEntityName().Length);
             }
             else
             {
-                currentPlayerText.text = currentEntity.getEntityName();
+                currentPlayerText.text = currentEntity.GetEntityName();
             }
 
         }
     }
     string GetRandomString(int length)
     {
-        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 !@#$%^&*()<>?,./;:'`~-=_+[]{}|??��?��???????�???���*�??";
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 !@#$%^&*()<>?,./;:'`~-=_+[]{}|⁜※±º⁋¶‰⁘⁖⁙⁏⁝⁚‥…⁞⁛⁕§†‡*¬⁅⁆";
         return new string(Enumerable.Repeat(chars, length)
             .Select(s =>
             {

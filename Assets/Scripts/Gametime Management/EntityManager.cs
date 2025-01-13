@@ -49,7 +49,7 @@ public class EntityManager : NetworkBehaviour
     {
         if (!EntitiesAreInOrder())
         {
-            entities = entities.OrderByDescending(e => e.initiative.Value).ToList();
+            entities = entities.OrderByDescending(e => e.Initiative.Value).ToList();
         }
     }
 
@@ -57,14 +57,14 @@ public class EntityManager : NetworkBehaviour
     {
         if (entities.Count < 2) return true;
 
-        int previousInitiative = entities[0].initiative.Value;
+        int previousInitiative = entities[0].Initiative.Value;
         for(int i = 1; i < entities.Count; i++)
         {
-            if(entities[i].initiative.Value > previousInitiative)
+            if(entities[i].Initiative.Value > previousInitiative)
             {
                 return false;
             }
-            previousInitiative = entities[i].initiative.Value;
+            previousInitiative = entities[i].Initiative.Value;
         }
 
         return true;

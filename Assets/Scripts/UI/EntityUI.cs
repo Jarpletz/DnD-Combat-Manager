@@ -10,10 +10,14 @@ public class EntityUI : MonoBehaviour
     private MovableObject moveable;
     private NPCBehavior npcBehavior;
 
-    [Header ("Child Components")]
+    [Header ("General Entity")]
     [SerializeField] TextMeshProUGUI nameText;
     [SerializeField] TMP_InputField initiativeInputField;
     [SerializeField] GameObject turnObject;
+    [Header("Health")]
+    [SerializeField] Slider healthSlider;
+    [SerializeField] TMP_InputField healthInputField;
+    [SerializeField] TMP_InputField maxHealthInputField;
     [Header("Movement")]
     [SerializeField] GameObject movementObject;
     [SerializeField] TextMeshProUGUI distanceMovedText;
@@ -29,6 +33,10 @@ public class EntityUI : MonoBehaviour
 
     public void OnDestroy()
     {
+        if (entity)
+        {
+            entity.OnEntityUpdatedCallback -= UpdateEntityDisplay;
+        }
         if (moveable)
         {
             // Unsubscribe from the flying callback
@@ -54,6 +62,9 @@ public class EntityUI : MonoBehaviour
             this.entity = entity;
             moveable = entity.gameObject.GetComponent<MovableObject>();
 
+            entity.OnEntityUpdatedCallback += UpdateEntityDisplay;
+            UpdateEntityDisplay();
+
             //subscribe to watch the flying stuff
             moveable.OnFlyingStateChangedCallback += UpdateFlyingToggle;
             UpdateFlyingToggle(moveable.GetIsFlying());
@@ -61,10 +72,6 @@ public class EntityUI : MonoBehaviour
             //prone
             moveable.OnProneStateChangedCallback -= UpdateProneToggle;
             UpdateProneToggle(moveable.GetIsProne());
-
-            //name and initiative
-            nameText.text = entity.getEntityName();
-            initiativeInputField.text = entity.initiative.Value.ToString();
 
             //npc stuff
             npcBehavior = entity.gameObject.GetComponent<NPCBehavior>();
@@ -79,7 +86,13 @@ public class EntityUI : MonoBehaviour
     public void CloseEntityUI()
     {
         CancelEntityMovement();
-        entity = null;
+
+        if (entity)
+        {
+            entity.OnEntityUpdatedCallback -= UpdateEntityDisplay;
+            entity = null;
+        }
+
         if (moveable)
         {
             moveable.OnFlyingStateChangedCallback -= UpdateFlyingToggle;
@@ -92,22 +105,72 @@ public class EntityUI : MonoBehaviour
         }
 
     }
-    public void UpdateInititative()
-    {
-        try
-        {
-            entity.updateIntitative(Int32.Parse(initiativeInputField.text));
-        }catch(FormatException e)
-        {
-            Debug.LogWarning("Format Error Updating Initiative:" + e.Message);
-        }
-    }
+    
     private void Update()
     {
         UpdateTurnDisplay();
         UpdateMovementDisplay();
         UpdateFlyingDisplay();
     }
+
+    #region General Entity
+    private void UpdateEntityDisplay()
+    {
+        //name and initiative
+        nameText.text = entity.GetEntityName();
+        if(entity.GetEntityColor() != null) { 
+            nameText.color = entity.GetEntityColor();
+        }
+        initiativeInputField.text = entity.Initiative.Value.ToString();
+
+        healthSlider.minValue = 0;
+        healthSlider.maxValue = entity.MaxHealth.Value;
+        healthSlider.value = entity.Health.Value;
+        healthInputField.text = entity.Health.Value.ToString();
+        maxHealthInputField.text = entity.MaxHealth.Value.ToString();
+
+    }
+    public void UpdateInititative()
+    {
+        try
+        {
+            entity.updateIntitative(Int32.Parse(initiativeInputField.text));
+        }
+        catch (FormatException e)
+        {
+            Debug.LogWarning("Format Error Updating Initiative:" + e.Message);
+        }
+    }
+    public void UpdateHealth()
+    {
+        if (!entity) return;
+
+        try
+        {
+            int newHealth = Int32.Parse(healthInputField.text);
+            entity.updateHealth(newHealth);
+        }
+        catch (FormatException e)
+        {
+            Debug.LogWarning(e.Message);
+        }
+    }
+    public void UpdateMaxHealth()
+    {
+        if (!entity) return;
+
+        try
+        {
+            int newMaxHealth = Int32.Parse(maxHealthInputField.text);
+            entity.updateMaxHealth(newMaxHealth);
+        }
+        catch (FormatException e)
+        {
+            Debug.LogWarning(e.Message);
+        }
+    }
+
+    #endregion
 
     #region prone
 

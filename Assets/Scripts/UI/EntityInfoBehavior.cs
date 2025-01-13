@@ -31,9 +31,9 @@ public class EntityInfoBehavior : MonoBehaviour
             {
                 int currentInitiative = Int32.Parse(initiativeInputField.text);
 
-                if (entity.initiative.Value != currentInitiative)
+                if (entity.Initiative.Value != currentInitiative)
                 {
-                    initiativeValue = entity.initiative.Value.ToString();
+                    initiativeValue = entity.Initiative.Value.ToString();
                     initiativeInputField.text = initiativeValue;
                 }
             }
@@ -49,9 +49,9 @@ public class EntityInfoBehavior : MonoBehaviour
     public void Initialize(Entity entity)
     {
         this.entity = entity;
-        this.initiativeValue = entity.initiative.Value.ToString();
+        this.initiativeValue = entity.Initiative.Value.ToString();
         this.initiativeInputField.text = initiativeValue;
-        this.nameText.text = entity.getEntityName();
+        this.nameText.text = entity.GetEntityName();
 
     }
 

@@ -26,7 +26,7 @@ public class PlayerSettings : MonoBehaviour
 
     void updatePlayerColor()
     {
-        Color entityColor = entity.getEntityColor();
+        Color entityColor = entity.GetEntityColor();
         if (entityColor != playerColor)
         {
             playerColor = entityColor;

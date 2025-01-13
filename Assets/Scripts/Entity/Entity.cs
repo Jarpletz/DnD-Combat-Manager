@@ -9,23 +9,52 @@ using ColorUtility = UnityEngine.ColorUtility;
 public class Entity : NetworkBehaviour
 {
     [Header ("Network Variables")]
-    public NetworkVariable<FixedString64Bytes> entityName = new NetworkVariable<FixedString64Bytes>("");
-    public NetworkVariable<FixedString64Bytes> entityColor = new NetworkVariable<FixedString64Bytes>("#FFF");
+    public NetworkVariable<FixedString64Bytes> EntityName = new NetworkVariable<FixedString64Bytes>("");
+    public NetworkVariable<FixedString64Bytes> EntityColor = new NetworkVariable<FixedString64Bytes>("#FFF");
 
-    public NetworkVariable<int> health = new NetworkVariable<int>(0);
-    public NetworkVariable<int> maxHealth = new NetworkVariable<int>(0);
+    public NetworkVariable<int> Health = new NetworkVariable<int>(0);
+    public NetworkVariable<int> MaxHealth = new NetworkVariable<int>(0);
     
-    public NetworkVariable<int> initiative = new NetworkVariable<int>(0);
-    public NetworkVariable<bool> isAlive = new NetworkVariable<bool>(true);
+    public NetworkVariable<int> Initiative = new NetworkVariable<int>(0);
 
-    [Header ("Settings")]
-    [SerializeField] bool hasDeathSaves = true;
+    public delegate void EntityUpdated();
+    public EntityUpdated OnEntityUpdatedCallback;
+
+    [Header ("Settings / Initial Values")]
     [SerializeField] bool isPlayer = true;
     [SerializeField] string initialName;
+    [SerializeField] Color initialColor;
+    [SerializeField] int inititalHealth;
+    [SerializeField] int inititalMaxHealth;
 
     [Header("Child Components")]
     [SerializeField] TextMeshPro nameTag;
     [SerializeField] TextMeshPro statusText;
+
+    private void Awake()
+    {
+        EntityName.OnValueChanged += (oldValue, newValue) =>
+        {
+            OnEntityUpdatedCallback?.Invoke();
+        };
+        EntityColor.OnValueChanged += (oldValue, newValue) =>
+        {
+            OnEntityUpdatedCallback?.Invoke();
+        };
+        Health.OnValueChanged += (oldValue, newValue) =>
+        {
+            OnEntityUpdatedCallback?.Invoke();
+        };
+        MaxHealth.OnValueChanged += (oldValue, newValue) =>
+        {
+            OnEntityUpdatedCallback?.Invoke();
+        };
+        Initiative.OnValueChanged += (oldValue, newValue) =>
+        {
+            OnEntityUpdatedCallback?.Invoke();
+        };
+    }
+
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
@@ -33,10 +62,10 @@ public class Entity : NetworkBehaviour
         if (IsServer)
         {
             updateName(initialName);
-            health.Value = 0;
-            maxHealth.Value = 0;
-            initiative.Value = 0;
-            isAlive.Value = true;
+            updateColor(initialColor);
+            Health.Value = inititalHealth;
+            MaxHealth.Value = inititalMaxHealth;
+            Initiative.Value = 0;
 
             //if is a player, create a measuring volume for that player
             if (isPlayer)
@@ -47,7 +76,8 @@ public class Entity : NetworkBehaviour
         //add to the Entity Manager
         EntityManager.Instance.entities.Add(this);
 
-        nameTag.text = getEntityName();
+        nameTag.text = GetEntityName();
+        nameTag.color = GetEntityColor();
 
     }
 
@@ -67,23 +97,17 @@ public class Entity : NetworkBehaviour
         }
     }
 
-    private void Update()
+    #region Name
+    public string GetEntityName()
     {
-        if(nameTag.text != getEntityName())
-        {
-            nameTag.text = getEntityName();
-        }
-    }
-
-    public string getEntityName()
-    {
-        return entityName.Value.Value;
+        return EntityName.Value.Value;
     }
     public void updateName(string newName)
     {
         if (IsServer)
         {
-            entityName.Value = newName;
+            EntityName.Value = newName;
+            updateNametagClientRpc(newName);
         }
         else
         {
@@ -94,7 +118,7 @@ public class Entity : NetworkBehaviour
     [ServerRpc]
     void updateNameServerRpc(string newName)
     {
-        entityName.Value = newName;
+        EntityName.Value = newName;
         nameTag.text = newName;
         updateNametagClientRpc(newName);
 
@@ -104,12 +128,14 @@ public class Entity : NetworkBehaviour
     {
         nameTag.text = newName;
     }
+    #endregion
 
-    public Color getEntityColor()
+    #region Color
+    public Color GetEntityColor()
     {
         Color c;
 
-        if (ColorUtility.TryParseHtmlString(entityColor.Value.Value, out c))
+        if (ColorUtility.TryParseHtmlString(EntityColor.Value.Value, out c))
         {
             return c;
         }
@@ -120,7 +146,7 @@ public class Entity : NetworkBehaviour
     {
         if (IsServer)
         {
-            entityColor.Value = "#" +  color.ToHexString();
+            EntityColor.Value = "#" +  color.ToHexString();
         }
         else
         {
@@ -132,14 +158,17 @@ public class Entity : NetworkBehaviour
     [ServerRpc]
     void updateColorServerRpc(string newColor)
     {
-        entityColor.Value = newColor;
+        EntityColor.Value = newColor;
+        nameTag.color = newColor;
     }
+    #endregion
 
+    #region Initiative
     public void updateIntitative(int newInitiative)
     {
         if (IsServer)
         {
-            initiative.Value = newInitiative;
+            Initiative.Value = newInitiative;
         }
         else
         {
@@ -149,18 +178,29 @@ public class Entity : NetworkBehaviour
     [ServerRpc]
     void updateInitiativeServerRpc(int newInitiative)
     {
-        initiative.Value = newInitiative;
+        Initiative.Value = newInitiative;
     }
+    #endregion
 
+    #region Health
     public void updateMaxHealth(int newMaxHealth)
     {
         if (IsServer)
         {
-            if(health.Value == maxHealth.Value)
+            if(Health.Value == MaxHealth.Value)
             {
-                health.Value = newMaxHealth;
+                Health.Value = newMaxHealth;
             }
-            maxHealth.Value = newMaxHealth;
+            else if(Health.Value > MaxHealth.Value)
+            {//if health is greater(ex. temp hp, add the overage to the new max health
+                Health.Value = newMaxHealth + (Health.Value - MaxHealth.Value);
+            }
+            else if (Health.Value > newMaxHealth)
+            {
+                Health.Value = newMaxHealth;
+
+            }
+            MaxHealth.Value = newMaxHealth;
         }
         else
         {
@@ -171,28 +211,38 @@ public class Entity : NetworkBehaviour
     [ServerRpc]
     void updateMaxHealthServerRpc(int newMaxHealth)
     {
-        maxHealth.Value = newMaxHealth; 
-        if (health.Value == maxHealth.Value)
+        if (Health.Value == MaxHealth.Value)
         {
-            health.Value = newMaxHealth;
+            Health.Value = newMaxHealth;
         }
+        else if (Health.Value > MaxHealth.Value)
+        {//if health is greater(ex. temp hp, add the overage to the new max health
+            Health.Value = newMaxHealth + (Health.Value - MaxHealth.Value);
+        }
+        else if (Health.Value > newMaxHealth)
+        {
+            Health.Value = newMaxHealth;
+
+        }
+        MaxHealth.Value = newMaxHealth;
     }
 
-    public void addHealth(int healthAdded)
+    public void updateHealth(int newHealth)
     {
-        addHealthServerRpc(healthAdded);
+        if (IsServer)
+        {
+            Health.Value = newHealth;
+        }
+        else
+        {
+            updateHealthServerRpc(newHealth);
+        }
     }
     [ServerRpc]
-    void addHealthServerRpc(int healthAdded)
+    void updateHealthServerRpc(int newHealth)
     {
-        health.Value += healthAdded;
-        if (health.Value <= 0 && !hasDeathSaves)
-        {
-            isAlive.Value = false;
-        }
-        if (health.Value > maxHealth.Value)
-        {
-            health.Value = maxHealth.Value;
-        }
+        Health.Value = newHealth;
     }
+
+    #endregion
 }

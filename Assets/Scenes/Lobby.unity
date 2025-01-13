@@ -2177,6 +2177,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8c319c8ebbee4d4199d783599da537f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_players: []
 --- !u!1 &731929682
 GameObject:
   m_ObjectHideFlags: 0
@@ -5549,7 +5550,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 901938233}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.8377916
+  m_Size: 0.83877337
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -7276,7 +7277,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 34.2
+  m_fontSize: 34.25
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1

@@ -35,10 +35,10 @@ public class DMInfoUI : UIInfo
     {
         if (entityOrderInfos.Count < 1) return true;
 
-        int previousInitiative = entityOrderInfos[0].GetComponent<EntityInfoBehavior>().entity.initiative.Value;
+        int previousInitiative = entityOrderInfos[0].GetComponent<EntityInfoBehavior>().entity.Initiative.Value;
         foreach(GameObject entityInfo in entityOrderInfos)
         {
-            int initiative = entityInfo.GetComponent<EntityInfoBehavior>().entity.initiative.Value;
+            int initiative = entityInfo.GetComponent<EntityInfoBehavior>().entity.Initiative.Value;
             if ( initiative > previousInitiative)
             {
                 return false;

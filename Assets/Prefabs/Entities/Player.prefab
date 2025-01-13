@@ -315,7 +315,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 4009617038
+  GlobalObjectIdHash: 3254720553
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -335,7 +335,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71b257b51b88cb04e9aa76ee6e3b6bc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  entityName:
+  EntityName:
     m_InternalValue:
       utf8LengthInBytes: 0
       bytes:
@@ -404,7 +404,7 @@ MonoBehaviour:
         byte0059: 0
         byte0060: 0
         byte0061: 0
-  entityColor:
+  EntityColor:
     m_InternalValue:
       utf8LengthInBytes: 4
       bytes:
@@ -473,17 +473,17 @@ MonoBehaviour:
         byte0059: 0
         byte0060: 0
         byte0061: 0
-  health:
+  Health:
     m_InternalValue: 0
-  maxHealth:
+  MaxHealth:
     m_InternalValue: 0
-  initiative:
+  Initiative:
     m_InternalValue: 0
-  isAlive:
-    m_InternalValue: 1
-  hasDeathSaves: 1
   isPlayer: 1
   initialName: Player
+  initialColor: {r: 1, g: 1, b: 1, a: 1}
+  inititalHealth: 10
+  inititalMaxHealth: 10
   nameTag: {fileID: 6594273762593565508}
   statusText: {fileID: 1502911149076629846}
 --- !u!114 &6474968420888206669
