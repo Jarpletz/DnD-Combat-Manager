@@ -854,6 +854,7 @@ GameObject:
   - component: {fileID: 9114403131880054225}
   - component: {fileID: 1502911149076629846}
   - component: {fileID: 2963751450176080221}
+  - component: {fileID: 6969303233118410411}
   m_Layer: 3
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -1028,5 +1029,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_radius: 0.44
   m_arcDegrees: 360
-  m_angularOffset: 294.96
+  m_angularOffset: 0
   m_maxDegreesPerLetter: 40
+--- !u!95 &6969303233118410411
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8960240924727747012}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: c4f74c7f441af1d4ea10f2ab6ee5bff1, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

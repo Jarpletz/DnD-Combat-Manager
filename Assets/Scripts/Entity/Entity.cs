@@ -87,7 +87,7 @@ public class Entity : NetworkBehaviour
 
         nameTag.text = GetEntityName();
         nameTag.color = GetEntityColor();
-        UpdateConditionStatusRing();
+        UpdateConditionStatusRing(ConditionIndex.Value);
     }
 
     public override void OnDestroy()
@@ -272,7 +272,7 @@ public class Entity : NetworkBehaviour
         {
             ConditionIndex.Value = newIndex;
             UpdateConditionIndexClientRpc(newIndex);
-            UpdateConditionStatusRing();
+            UpdateConditionStatusRing(newIndex);
         }
         else
         {
@@ -285,22 +285,31 @@ public class Entity : NetworkBehaviour
         ConditionIndex.Value = newIndex;
 
         UpdateConditionIndexClientRpc(newIndex);
-        UpdateConditionStatusRing();
+        UpdateConditionStatusRing(newIndex);
     }
     [ClientRpc]
     void UpdateConditionIndexClientRpc(int newIndex)
     {
-        Debug.Log("Update Ring!");
-        UpdateConditionStatusRing();
+        UpdateConditionStatusRing(newIndex);
     }
 
-    void UpdateConditionStatusRing()
+    void UpdateConditionStatusRing(int newIndex)
     {
-        //dont show if status is 0 (None)
-        statusBackground.gameObject.SetActive(ConditionIndex.Value != 0);
+        bool showStatusRing = newIndex != 0;
 
-        statusText.text = GetConditionName() + " " + GetConditionName() + " " + GetConditionName();
-        Color statusColor = GetConditionColor();
+        NPCBehavior npcBehavior = GetComponent<NPCBehavior>();
+        //if it should be hidden by npc behavior, don't show it
+        if(npcBehavior && !npcBehavior.ShowPlayers.Value && IsClient && !IsServer) {
+            showStatusRing = false;
+        }
+
+        //dont show if status is 0 (None)
+        statusBackground.gameObject.SetActive(showStatusRing);
+
+        string conditionName = GameSettings.Instance.conditions[newIndex].name;
+        statusText.text = conditionName + " " + conditionName + " " + conditionName;
+
+        Color statusColor = GameSettings.Instance.conditions[newIndex].color;
         statusColor.a = statusBackground.color.a;
         statusBackground.color = statusColor;
     }

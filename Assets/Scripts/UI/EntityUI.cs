@@ -129,6 +129,8 @@ public class EntityUI : MonoBehaviour
     #region General Entity
     private void UpdateEntityDisplay()
     {
+        if (!entity) return;
+
         //name and initiative
         nameText.text = entity.GetEntityName();
         if(entity.GetEntityColor() != null) { 
