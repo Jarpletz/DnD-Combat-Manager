@@ -822,6 +822,9 @@ MonoBehaviour:
     m_InternalValue: {x: 0, y: 0, z: 0}
   IsFlying:
     m_InternalValue: 0
+  IsProne:
+    m_InternalValue: 0
+  proneOffsetDistance: 0
 --- !u!64 &4064153964219814028
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -886,7 +889,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71b257b51b88cb04e9aa76ee6e3b6bc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  entityName:
+  EntityName:
     m_InternalValue:
       utf8LengthInBytes: 0
       bytes:
@@ -955,7 +958,7 @@ MonoBehaviour:
         byte0059: 0
         byte0060: 0
         byte0061: 0
-  entityColor:
+  EntityColor:
     m_InternalValue:
       utf8LengthInBytes: 4
       bytes:
@@ -1024,16 +1027,19 @@ MonoBehaviour:
         byte0059: 0
         byte0060: 0
         byte0061: 0
-  health:
+  Health:
     m_InternalValue: 0
-  maxHealth:
+  MaxHealth:
     m_InternalValue: 0
-  initiative:
+  Initiative:
     m_InternalValue: 0
-  isAlive:
-    m_InternalValue: 1
-  hasDeathSaves: 1
+  ConditionIndex:
+    m_InternalValue: 0
   isPlayer: 1
   initialName: Posty the Formitable
+  initialColor: {r: 0, g: 0, b: 0, a: 0}
+  inititalHealth: 0
+  inititalMaxHealth: 0
   nameTag: {fileID: 9210230462275891937}
+  statusBackground: {fileID: 4051870278651162591}
   statusText: {fileID: 5982846179494194095}

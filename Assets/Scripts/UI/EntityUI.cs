@@ -30,6 +30,19 @@ public class EntityUI : MonoBehaviour
     [Header("NPC")]
     [SerializeField] GameObject npcObject;
     [SerializeField] Toggle showNpcToggle;
+    [Header("Condition")]
+    [SerializeField] TMP_Dropdown conditionDropdown;
+
+    private void Start()
+    {
+        conditionDropdown.ClearOptions();
+        foreach(GameSettings.EntityCondition condition in GameSettings.Instance.conditions)
+        {
+            conditionDropdown.options.Add(new TMP_Dropdown.OptionData() { text = condition.name });
+        }
+        conditionDropdown.RefreshShownValue();
+
+    }
 
     public void OnDestroy()
     {
@@ -123,11 +136,16 @@ public class EntityUI : MonoBehaviour
         }
         initiativeInputField.text = entity.Initiative.Value.ToString();
 
+        //health
         healthSlider.minValue = 0;
         healthSlider.maxValue = entity.MaxHealth.Value;
         healthSlider.value = entity.Health.Value;
         healthInputField.text = entity.Health.Value.ToString();
         maxHealthInputField.text = entity.MaxHealth.Value.ToString();
+
+        //condition
+        conditionDropdown.value = entity.ConditionIndex.Value;
+        conditionDropdown.RefreshShownValue();
 
     }
     public void UpdateInititative()
@@ -170,6 +188,13 @@ public class EntityUI : MonoBehaviour
         }
     }
 
+    public void UpdateConditionIndex(TMP_Dropdown dropdown)
+    {
+        if (entity)
+        {
+            entity.UpdateConditionIndex(dropdown.value);
+        }
+    }
     #endregion
 
     #region prone

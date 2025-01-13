@@ -479,12 +479,15 @@ MonoBehaviour:
     m_InternalValue: 0
   Initiative:
     m_InternalValue: 0
+  ConditionIndex:
+    m_InternalValue: 0
   isPlayer: 1
   initialName: Player
   initialColor: {r: 1, g: 1, b: 1, a: 1}
   inititalHealth: 10
   inititalMaxHealth: 10
   nameTag: {fileID: 6594273762593565508}
+  statusBackground: {fileID: 3848216263951459669}
   statusText: {fileID: 1502911149076629846}
 --- !u!114 &6474968420888206669
 MonoBehaviour:
@@ -867,7 +870,7 @@ RectTransform:
   m_GameObject: {fileID: 8960240924727747012}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -0.034}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 0.921, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2926905636671163606}
@@ -939,7 +942,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Concentration Concentraation
+  m_text: Concentration Concentration Concentration
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5e4a0bebc816d78479177e4e4e677379, type: 2}
   m_sharedMaterial: {fileID: 7398859206837830080, guid: 5e4a0bebc816d78479177e4e4e677379, type: 2}
@@ -1023,7 +1026,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6ab7d641c684454dbb2bb95ae892dd6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_radius: 0.4
+  m_radius: 0.44
   m_arcDegrees: 360
-  m_angularOffset: 0
-  m_maxDegreesPerLetter: 13
+  m_angularOffset: 294.96
+  m_maxDegreesPerLetter: 40
