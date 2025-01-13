@@ -11,21 +11,26 @@ public class MeasuringVolume : NetworkBehaviour
 {
 
     [Serializable]
-    public class NameObjectPair
+    public class MeasurementTool
     {
         public string name;
-        public GameObject prefab; // Keep this if you need it.
+        public GameObject prefab;
+        public float scaleMultiplier;
     }
 
 
-    [Header ("Children Objects and Config")]    
+    [Header ("Children Objects")]    
     [SerializeField] RuntimeTransformHandle rth;
     [SerializeField] NetworkObject currentVolume;
-    [SerializeField] NameObjectPair currentObjectPair;
+    [SerializeField] Transform positionTargetVolume;
+    [SerializeField] MeasurementTool currrentMeasurementTool;
+
+    [Header ("Config")]
     [SerializeField] float rotationSpeed;
+    [SerializeField] float movementToTargetSpeed;
 
     [Header ("Possible Volumes")]
-    public List<NameObjectPair> volumes = new List<NameObjectPair>();
+    public List<MeasurementTool> measurementTools = new List<MeasurementTool>();
 
     [Header("Network Variables")]
     private NetworkVariable<FixedString64Bytes> volumeName = new NetworkVariable<FixedString64Bytes> ();
@@ -86,7 +91,7 @@ public class MeasuringVolume : NetworkBehaviour
     private void Update()
     {
         //show the transform handles if they have permission and they should be shown
-        if((IsOwner && isDisplayed && showTransformHandles) ||(IsServer && showOthers.Value))
+        if(IsOwner && isDisplayed && showTransformHandles)
         {
             rth.gameObject.SetActive(true);
         }
@@ -109,9 +114,8 @@ public class MeasuringVolume : NetworkBehaviour
             //scale the volume properly
             if (IsServer)
             {
-                float scale = volumeSizeFeet.Value / GameSettings.Instance.distanceScaleMultipler;
+                float scale = volumeSizeFeet.Value / GameSettings.Instance.distanceScaleMultipler * currrentMeasurementTool.scaleMultiplier;
                 currentVolume.transform.localScale = new Vector3(scale, scale, scale);
-
             }
 
             //rotate the volume if the correct key is pressed
@@ -123,15 +127,22 @@ public class MeasuringVolume : NetworkBehaviour
                     updateRotationServerRpc(rotationSpeed * Time.deltaTime);
                
             }
+
+            //update the position to match the target modified by the rth
+            if (IsOwner)
+            {
+                updatePosition(positionTargetVolume.position);
+            }
+
         }
         //if the volumes name has changed, change the volume displayed
-        if(GetVolumeName() != currentObjectPair.name)
+        if(GetVolumeName() != currrentMeasurementTool.name)
         {
-            for(int i = 0; i < volumes.Count; i++)
+            for(int i = 0; i < measurementTools.Count; i++)
             {
-                if(GetVolumeName() == volumes[i].name)
+                if(GetVolumeName() == measurementTools[i].name)
                 {
-                    changeVolume(volumes[i].name);
+                    changeVolume(measurementTools[i].name);
                     break;
                 }
             }
@@ -195,13 +206,13 @@ public class MeasuringVolume : NetworkBehaviour
 
     void changeVolume(string volumeName)
     {
-        NameObjectPair newVolumePair = volumes.Find(v => v.name == volumeName);
+        MeasurementTool newVolumePair = measurementTools.Find(v => v.name == volumeName);
         if (newVolumePair == null)
         {
             Debug.LogWarning("No pair found!");
             return;
         }
-        currentObjectPair = newVolumePair;
+        currrentMeasurementTool = newVolumePair;
 
         spawnCurrentVolumeServerRpc();
     }
@@ -218,16 +229,15 @@ public class MeasuringVolume : NetworkBehaviour
             currentVolume = null;
         }
 
-        GameObject newVolume = Instantiate(currentObjectPair.prefab, transform);
+        GameObject newVolume = Instantiate(currrentMeasurementTool.prefab, transform);
         NetworkObject netObj = newVolume.GetComponent<NetworkObject>();
         netObj.SpawnWithOwnership(OwnerClientId,true);
 
-        netObj.TrySetParent(transform, false);
-        netObj.transform.position = previousTransform.position;
+        netObj.TrySetParent(transform, true);
+        netObj.transform.position = previousTransform.transform.position;
         netObj.transform.rotation = previousTransform.rotation;
         netObj.transform.localScale = previousTransform.localScale;
 
-        rth.SetTarget(netObj.gameObject);
         currentVolume = netObj;
         if (!IsOwner) 
             currentVolume.gameObject.SetActive(showOthers.Value);
@@ -244,53 +254,38 @@ public class MeasuringVolume : NetworkBehaviour
         {
             currentVolume = networkObject;
             
-            rth.SetTarget(networkObject.gameObject);
             if (!IsOwner)
             {
                 currentVolume.gameObject.SetActive(showOthers.Value);
             }
-            if (!IsServer)
-            {
-                rth.startedDraggingHandle.AddListener(OnStartDrag);
-                rth.endedDraggingHandle.AddListener(OnEndDrag);
-            }
         }
     }
 
-    void OnStartDrag()
-    {
-        if (!currentVolume) return;
-
-        currentVolume.GetComponent<NetworkTransform>().enabled = false;
-    }
-    void OnEndDrag()
-    {
-        if (!currentVolume) return;
-
-        if (!IsServer)
-        {
-            updatePositionAfterDragServerRpc(currentVolume.transform.position);
-        }
-
-    }
-
-    [ServerRpc]
-    void updatePositionAfterDragServerRpc(Vector3 newPosition)
-    {
-        currentVolume.transform.position = newPosition;
-        FinsihDragClientRPC();
-    }
-
-    [ClientRpc]
-    void FinsihDragClientRPC()
-    {
-
-        currentVolume.GetComponent<NetworkTransform>().enabled = true;
-    }
     [ServerRpc]
     void updateRotationServerRpc(float change)
     {   
-    currentVolume.transform.Rotate(0, rotationSpeed * Time.deltaTime, 0);
+        currentVolume.transform.Rotate(0, rotationSpeed * Time.deltaTime, 0);
+    }
+
+    void updatePosition(Vector3 targetPosition)
+    {
+        if (IsServer)
+        {
+            if (currentVolume != null)
+            {
+                currentVolume.transform.position = targetPosition;
+            }
+        }
+        else updatePositionServerRpc(targetPosition);
+    }
+
+    [ServerRpc]
+    void updatePositionServerRpc(Vector3 targetPosition)
+    {
+        if (currentVolume != null)
+        {
+            currentVolume.transform.position = targetPosition;
+        }
     }
    
 }

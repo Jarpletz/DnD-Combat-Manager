@@ -74,7 +74,7 @@ public class MeasurementUI : MonoBehaviour
         if (measuringVolume == null) return;
 
         shapeDropdown.ClearOptions();
-        foreach(MeasuringVolume.NameObjectPair pair in measuringVolume.volumes)
+        foreach(MeasuringVolume.MeasurementTool pair in measuringVolume.measurementTools)
         {
             shapeDropdown.options.Add(new TMP_Dropdown.OptionData() { text = pair.name });
         }

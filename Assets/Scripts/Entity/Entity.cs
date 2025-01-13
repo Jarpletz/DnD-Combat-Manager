@@ -78,12 +78,14 @@ public class Entity : NetworkBehaviour
 
         nameTag.text = GetEntityName();
         nameTag.color = GetEntityColor();
-
     }
 
     public override void OnDestroy()
     {
-        EntityManager.Instance.entities.Remove(this);
+        if (EntityManager.Instance)
+        {
+            EntityManager.Instance.entities.Remove(this);
+        }
 
         base.OnDestroy();
     }
@@ -159,7 +161,6 @@ public class Entity : NetworkBehaviour
     void updateColorServerRpc(string newColor)
     {
         EntityColor.Value = newColor;
-        nameTag.color = newColor;
     }
     #endregion
 

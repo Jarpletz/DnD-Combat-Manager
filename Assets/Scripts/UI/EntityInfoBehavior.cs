@@ -57,6 +57,8 @@ public class EntityInfoBehavior : MonoBehaviour
 
     public void UpdateInitiative()
     {
+        if (!entity) return;
+
         if (initiativeInputField.text == "") return;
         try
         {
@@ -73,7 +75,7 @@ public class EntityInfoBehavior : MonoBehaviour
 
     void HandleTurnChanged()
     {
-        if (EntityManager.Instance.IsCurrentEntity(entity))
+        if (entity && EntityManager.Instance.IsCurrentEntity(entity))
         {
             DisplayAsCurrent();
         }

@@ -24,9 +24,7 @@ public class NPCBehavior : NetworkBehaviour
         {
             OnShowPlayersChanged?.Invoke(newValue);
         };
-    }
-    private void Start()
-    {
+
         meshRenderer = GetComponent<MeshRenderer>();
 
         //make two copies of the material

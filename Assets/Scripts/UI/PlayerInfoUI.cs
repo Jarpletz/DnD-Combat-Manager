@@ -27,7 +27,7 @@ public class PlayerInfoUI : UIInfo
     }
     string GetRandomString(int length)
     {
-        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 !@#$%^&*()<>?,./;:'`~-=_+[]{}|⁜※±º⁋¶‰⁘⁖⁙⁏⁝⁚‥…⁞⁛⁕§†‡*¬⁅⁆";
+        const string chars = "0123456789 !@#$%^&*()<>?,./;:'`~-=_+[]{}|";
         return new string(Enumerable.Repeat(chars, length)
             .Select(s =>
             {

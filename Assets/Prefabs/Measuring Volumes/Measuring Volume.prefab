@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &907544247024269470
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7429750485593342566}
+  m_Layer: 0
+  m_Name: Volume Position Target
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7429750485593342566
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 907544247024269470}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7702289764939212572}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2092132231383805205
 GameObject:
   m_ObjectHideFlags: 0
@@ -54,7 +85,7 @@ MonoBehaviour:
   autoScale: 0
   autoScaleFactor: 1
   handleCamera: {fileID: 0}
-  target: {fileID: 0}
+  target: {fileID: 7429750485593342566}
   startedDraggingHandle:
     m_PersistentCalls:
       m_Calls: []
@@ -97,6 +128,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4671897654400932328}
+  - {fileID: 7429750485593342566}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &467495559743922429
@@ -133,19 +165,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rth: {fileID: 3289168934316971868}
   currentVolume: {fileID: 0}
-  currentObjectPair:
-    name: Cube
-    prefab: {fileID: 7452108527434509941, guid: 0435284ec1f21d344bac2d7ed0b2c143, type: 3}
+  positionTargetVolume: {fileID: 7429750485593342566}
+  currrentMeasurementTool:
+    name: 
+    prefab: {fileID: 0}
+    scaleMultiplier: 0
   rotationSpeed: 90
-  volumes:
+  movementToTargetSpeed: 30
+  measurementTools:
   - name: Cube
     prefab: {fileID: 7452108527434509941, guid: 0435284ec1f21d344bac2d7ed0b2c143, type: 3}
+    scaleMultiplier: 1
   - name: Sphere
     prefab: {fileID: 4731152602438214690, guid: e7a5e1ae6123ab1418c1857c284a82f0, type: 3}
+    scaleMultiplier: 2
   - name: Cone
     prefab: {fileID: 723649055028586553, guid: 3458d82658cc9ff43908c7a1452706f2, type: 3}
+    scaleMultiplier: 1
   - name: Cylinder
     prefab: {fileID: 5867967074704096005, guid: 7b34637f98c977f4fb7e79f378c66857, type: 3}
+    scaleMultiplier: 2
   volumeSizeFeet:
     m_InternalValue: 0
   showOthers:
@@ -154,3 +193,4 @@ MonoBehaviour:
   isDisplayed: 1
   initialShapeName: Cube
   initialSizeFeet: 15
+  isInitialized: 0
