@@ -158,13 +158,15 @@ public class Entity : NetworkBehaviour
     }
     public void updateColor(Color color)
     {
+        string newColor = "#" + color.ToHexString();
         if (IsServer)
         {
-            EntityColor.Value = "#" +  color.ToHexString();
+            EntityColor.Value = newColor;
+            updateNametagColorClientRpc(newColor);
         }
         else
         {
-            updateColorServerRpc("#" + color.ToHexString());
+            updateColorServerRpc(newColor);
         }
 
         
@@ -173,6 +175,17 @@ public class Entity : NetworkBehaviour
     void updateColorServerRpc(string newColor)
     {
         EntityColor.Value = newColor;
+        updateNametagColorClientRpc(newColor);
+    }
+    [ClientRpc]
+    void updateNametagColorClientRpc(string newColor)
+    {
+
+        Color c;
+        if (ColorUtility.TryParseHtmlString(newColor, out c))
+        {
+            nameTag.color = c;
+        }
     }
     #endregion
 

@@ -44,7 +44,7 @@ public class PlayerInfoManager : NetworkBehaviour
 
     public static PlayerInfoManager Instance;
 
-    List<PlayerInfo> localPlayers = new List<PlayerInfo>();
+    [SerializeField] List<PlayerInfo> localPlayers = new List<PlayerInfo>();
     public List<PlayerInfo> m_players = new List<PlayerInfo>();
 
     public delegate void OnPlayerAdded(PlayerInfo playerInfo);
@@ -61,10 +61,6 @@ public class PlayerInfoManager : NetworkBehaviour
             Destroy(gameObject);
     }
 
-    private void Start()
-    {
-        NetworkManager.Singleton.OnClientDisconnectCallback += RemovePlayerInfo;
-    }
     public override void OnDestroy()
     {
         if (NetworkManager.Singleton)
@@ -77,6 +73,9 @@ public class PlayerInfoManager : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
+
+        NetworkManager.Singleton.OnClientDisconnectCallback += RemovePlayerInfo;
+
 
         foreach (PlayerInfo player in localPlayers)
         {
@@ -126,8 +125,9 @@ public class PlayerInfoManager : NetworkBehaviour
         onPlayerAddedCallback?.Invoke(playerInfo);
     }
 
-    private void RemovePlayerInfo(ulong clientId) {
-        localPlayers.Remove(m_players.Find(p => p.clientId == clientId));
+    public void RemovePlayerInfo(ulong clientId) {
+        Debug.Log("Removed Player from Info:" + clientId);
+        localPlayers.Remove(localPlayers.Find(p => p.clientId == clientId));
         m_players.Remove(m_players.Find(p => p.clientId == clientId));
     }
 }

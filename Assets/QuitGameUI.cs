@@ -50,6 +50,10 @@ public class QuitGameUI : MonoBehaviour
     }
     public void QuitGame()
     {
+        if (PlayerInfoManager.Instance)
+        {
+            PlayerInfoManager.Instance.RemovePlayerInfo(NetworkManager.Singleton.LocalClientId);
+        }
         if (NetworkManager.Singleton.IsServer || NetworkManager.Singleton.IsConnectedClient)
         {
             NetworkManager.Singleton.Shutdown();
@@ -57,7 +61,7 @@ public class QuitGameUI : MonoBehaviour
         if (LobbyManager.Instance && LobbyManager.Instance.joinedLobby != null)
         {
             LobbyManager.Instance.LeaveLobby();
-        }
+        }  
         SceneManager.LoadScene("Lobby");
     }
 }

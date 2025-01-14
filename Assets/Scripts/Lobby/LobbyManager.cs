@@ -19,7 +19,7 @@ public class LobbyManager : MonoBehaviour
     private Lobby hostLobby;
     private float heartbeatTimer;
     private float pollTimeer;
-    private bool connectedToRelay = false;
+    public bool connectedToRelay = false;
 
     //Events
     public delegate void OnJoinedLobbyUpdated(Lobby joinedLobby);
@@ -325,6 +325,7 @@ public class LobbyManager : MonoBehaviour
             await LobbyService.Instance.RemovePlayerAsync(joinedLobby.Id, AuthenticationService.Instance.PlayerId);
             joinedLobby = null;
             hostLobby = null;
+            connectedToRelay = false;
             JoinedLobbyUpdatedEvent?.Invoke(joinedLobby);
         }
         catch (LobbyServiceException e)
