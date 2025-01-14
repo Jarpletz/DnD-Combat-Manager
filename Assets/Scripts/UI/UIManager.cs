@@ -81,6 +81,7 @@ public class UIManager : MonoBehaviour
         if (!uiInfo)
         {
             GameObject dmInfoObject = Instantiate(dmInfoUIPrefab, transform);
+            dmInfoObject.transform.SetAsFirstSibling();
             uiInfo = dmInfoObject.GetComponent<DMInfoUI>();
         }
         
@@ -103,8 +104,9 @@ public class UIManager : MonoBehaviour
         //if the player ui doesn't exist, create it
         if (!uiInfo)
         {
-            GameObject dmInfoObject = Instantiate(playerInfoPrefab, transform);
-            uiInfo = dmInfoObject.GetComponent<PlayerInfoUI>();
+            GameObject playerInfoObject = Instantiate(playerInfoPrefab, transform);
+            playerInfoObject.transform.SetAsFirstSibling();
+            uiInfo = playerInfoObject.GetComponent<PlayerInfoUI>();
         }
 
         
