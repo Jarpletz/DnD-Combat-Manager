@@ -407,7 +407,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &6761753916315900750
 Transform:
   m_ObjectHideFlags: 0
@@ -466,7 +466,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 6911641905832879514, guid: f4198ebb0f67dd043b8bfebd7e2be953, type: 3}
-  m_Color: {r: 0.216362, g: 1, b: 0, a: 0.34117648}
+  m_Color: {r: 0.216362, g: 1, b: 0, a: 0.5019608}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -1012,15 +1012,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400004, guid: 20d97ea0953936148b25caa82b5e14f9, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3.54663
+      value: -3.5
       objectReference: {fileID: 0}
     - target: {fileID: 400004, guid: 20d97ea0953936148b25caa82b5e14f9, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.49999905
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 400004, guid: 20d97ea0953936148b25caa82b5e14f9, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -9.373958
+      value: 3.5
       objectReference: {fileID: 0}
     - target: {fileID: 400004, guid: 20d97ea0953936148b25caa82b5e14f9, type: 3}
       propertyPath: m_LocalRotation.w
@@ -2713,7 +2713,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 825744570
+  GlobalObjectIdHash: 3113883101
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -2910,7 +2910,7 @@ MonoBehaviour:
   ConditionIndex:
     m_InternalValue: 0
   isPlayer: 0
-  initialName: Default Male
+  initialName: Default Male 4
   initialColor: {r: 0.97735846, g: 0.97735846, b: 0.97735846, a: 1}
   inititalHealth: 22
   inititalMaxHealth: 22
