@@ -15,7 +15,7 @@ public class NPCBehavior : NetworkBehaviour
 
     Material opaqueMaterial;
     Material transparentMaterial;
-    MeshRenderer meshRenderer;
+    Renderer meshRenderer;
 
 
     private void Awake()
@@ -25,13 +25,17 @@ public class NPCBehavior : NetworkBehaviour
             OnShowPlayersChanged?.Invoke(newValue);
         };
 
-        meshRenderer = GetComponent<MeshRenderer>();
+        meshRenderer = GetComponent<Renderer>();
 
-        //make two copies of the material
-        opaqueMaterial = new Material(meshRenderer.material);
-        transparentMaterial = new Material(meshRenderer.material);
+        if (meshRenderer)
+        {
+            //make two copies of the material
+            opaqueMaterial = new Material(meshRenderer.material);
+            transparentMaterial = new Material(meshRenderer.material);
 
-        ConfigureTransparentMaterial(transparentMaterial);
+            ConfigureTransparentMaterial(transparentMaterial);
+        }
+        
     }
 
     public override void OnNetworkSpawn() { 
@@ -79,6 +83,8 @@ public class NPCBehavior : NetworkBehaviour
 
     private void SwitchMaterial(bool useTransparentMaterial)
     {
+        if (!meshRenderer) return;
+
         if (useTransparentMaterial)
         {
             meshRenderer.material = transparentMaterial;
@@ -113,7 +119,10 @@ public class NPCBehavior : NetworkBehaviour
 
     public void SetClientVisibility(bool isShown)
     {
-        meshRenderer.enabled = isShown;
+        if (meshRenderer)
+        {
+            meshRenderer.enabled = isShown;
+        }
         foreach (GameObject obj in childObjectsToHide)
         {
             obj.SetActive(isShown);
