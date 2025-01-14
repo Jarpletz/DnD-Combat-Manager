@@ -69,40 +69,20 @@ public class CameraMovement : MonoBehaviour
 
         }
 
-        //clamp x
-        if(transform.position.x <= xClamps.x && xAxisValue < 0.0)
-        {
-            xAxisValue = 0;
-        }
-        if (transform.position.x >= xClamps.y && xAxisValue > 0.0)
-        {
-            xAxisValue = 0;
-        }
-
-        //clamp y
-        if (transform.position.y <= zoomClamps.x && yAxisValue < 0.0)
-        {
-            yAxisValue = 0;
-        }
-        if (transform.position.y >= zoomClamps.y && yAxisValue > 0.0)
-        {
-            yAxisValue = 0;
-        }
-
-        //clamp z
-        if (transform.position.z <= xClamps.x && zAxisValue < 0.0)
-        {
-            zAxisValue = 0;
-        }
-        if (transform.position.z >= xClamps.y && zAxisValue > 0.0)
-        {
-            zAxisValue = 0;
-        }
-
-
         transform.Translate(new Vector3(xAxisValue, yAxisValue, zAxisValue));
 
         transform.Rotate(new Vector3(0.0f, rotateValue, 0.0f));
+
+
+        //clamp x
+        float xClamp = Mathf.Clamp(transform.position.x, xClamps.x, xClamps.y);
+        //clamp y
+        float yClamp = Mathf.Clamp(transform.position.y, zoomClamps.x, zoomClamps.y);
+        //clamp z
+        float zClamp = Mathf.Clamp(transform.position.z, zClamps.x, zClamps.y);
+        //clamp position
+        transform.position = new Vector3(xClamp, yClamp, zClamp);
+
 
         lastMousePos = Input.mousePosition;
     }

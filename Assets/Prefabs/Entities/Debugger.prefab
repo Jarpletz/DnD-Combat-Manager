@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2007581476917651012}
   - component: {fileID: 8121015366345060940}
   - component: {fileID: 2827333473533575413}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Cube (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -117,7 +117,7 @@ GameObject:
   - component: {fileID: 1788446534644691599}
   - component: {fileID: 2536583474527704651}
   - component: {fileID: 1777529713896965707}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -226,7 +226,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &221417496893157141
 Transform:
   m_ObjectHideFlags: 0
@@ -498,7 +498,7 @@ GameObject:
   - component: {fileID: 7505541689327226389}
   - component: {fileID: 8055807273900296400}
   - component: {fileID: 4404622522335222356}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Debugger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -811,7 +811,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 733267049170250415}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: FootPosition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1054,7 +1054,7 @@ GameObject:
   - component: {fileID: 2676156627967688669}
   - component: {fileID: 8863799098587542564}
   - component: {fileID: 6402360796798426254}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Particles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5886,7 +5886,7 @@ GameObject:
   - component: {fileID: 3829419984154524224}
   - component: {fileID: 7350802847262828559}
   - component: {fileID: 6780663113441131860}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Cube (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

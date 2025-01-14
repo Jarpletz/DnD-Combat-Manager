@@ -1,9 +1,7 @@
 using TMPro;
 using Unity.Collections;
 using Unity.Netcode;
-using Unity.Services.Authentication;
 using Unity.VisualScripting;
-using UnityEditor.Rendering.LookDev;
 using UnityEngine;
 using ColorUtility = UnityEngine.ColorUtility;
 
@@ -60,9 +58,8 @@ public class Entity : NetworkBehaviour
         ConditionIndex.OnValueChanged += (oldValue, newValue) =>
         {
             OnEntityUpdatedCallback?.Invoke();
-        };
+        };    
     }
-
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
@@ -87,9 +84,11 @@ public class Entity : NetworkBehaviour
 
         nameTag.text = GetEntityName();
         nameTag.color = GetEntityColor();
-        UpdateConditionStatusRing(ConditionIndex.Value);
     }
-
+    private void Update()
+    {
+        UpdateConditionStatusRing();
+    }
     public override void OnDestroy()
     {
         if (EntityManager.Instance)
@@ -274,8 +273,6 @@ public class Entity : NetworkBehaviour
         if (IsServer)
         {
             ConditionIndex.Value = newIndex;
-            UpdateConditionIndexClientRpc(newIndex);
-            UpdateConditionStatusRing(newIndex);
         }
         else
         {
@@ -286,18 +283,12 @@ public class Entity : NetworkBehaviour
     void UpdateConditionIndexServerRpc(int newIndex)
     {
         ConditionIndex.Value = newIndex;
-
-        UpdateConditionIndexClientRpc(newIndex);
-        UpdateConditionStatusRing(newIndex);
-    }
-    [ClientRpc]
-    void UpdateConditionIndexClientRpc(int newIndex)
-    {
-        UpdateConditionStatusRing(newIndex);
     }
 
-    void UpdateConditionStatusRing(int newIndex)
+    void UpdateConditionStatusRing()
     {
+        int newIndex = ConditionIndex.Value;
+
         bool showStatusRing = newIndex != 0;
 
         NPCBehavior npcBehavior = GetComponent<NPCBehavior>();
@@ -305,7 +296,6 @@ public class Entity : NetworkBehaviour
         if(npcBehavior && !npcBehavior.ShowPlayers.Value && IsClient && !IsServer) {
             showStatusRing = false;
         }
-
         //dont show if status is 0 (None)
         statusBackground.gameObject.SetActive(showStatusRing);
 

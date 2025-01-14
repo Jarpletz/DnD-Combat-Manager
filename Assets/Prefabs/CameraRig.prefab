@@ -50,7 +50,7 @@ MonoBehaviour:
   rotateSpeed: 60
   xClamps: {x: -20, y: 20}
   zClamps: {x: -20, y: 20}
-  zoomClamps: {x: 3, y: 15}
+  zoomClamps: {x: 2, y: 15}
 --- !u!1 &8261050439388733626
 GameObject:
   m_ObjectHideFlags: 0
@@ -95,7 +95,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0.3660378, g: 0.3660378, b: 0.3660378, a: 0.5411765}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
