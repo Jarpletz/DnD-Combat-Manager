@@ -376,7 +376,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: -1
   m_Sprite: {fileID: -2413806693520163455, guid: ebe73ca9363db456bacf42c025bb4847, type: 3}
   m_Color: {r: 0, g: 0, b: 0, a: 0.6313726}
   m_FlipX: 0
@@ -664,7 +664,7 @@ MonoBehaviour:
   m_radius: 0.4
   m_arcDegrees: 360
   m_angularOffset: 0
-  m_maxDegreesPerLetter: 13
+  m_maxDegreesPerLetter: 40
 --- !u!95 &7624275435924740201
 Animator:
   serializedVersion: 5
@@ -793,6 +793,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: aad21d177c9f64f4bad6c3e48c9e417d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 416430283527252129}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: aad21d177c9f64f4bad6c3e48c9e417d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1943279336226555202}
   m_SourcePrefab: {fileID: 100100000, guid: aad21d177c9f64f4bad6c3e48c9e417d, type: 3}
 --- !u!4 &6026281682775913020 stripped
 Transform:
@@ -816,7 +819,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2494795438
+  GlobalObjectIdHash: 3587716976
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -1050,18 +1053,39 @@ MonoBehaviour:
         byte0060: 0
         byte0061: 0
   Health:
-    m_InternalValue: 0
+    m_InternalValue: 17
   MaxHealth:
-    m_InternalValue: 0
+    m_InternalValue: 17
   Initiative:
     m_InternalValue: 0
   ConditionIndex:
     m_InternalValue: 0
-  isPlayer: 1
-  initialName: Posty the Formitable
-  initialColor: {r: 0, g: 0, b: 0, a: 0}
-  inititalHealth: 0
-  inititalMaxHealth: 0
+  isPlayer: 0
+  initialName: French Fry 2
+  initialColor: {r: 1, g: 0.70633787, b: 0.111320674, a: 1}
+  inititalHealth: 17
+  inititalMaxHealth: 17
   nameTag: {fileID: 9210230462275891937}
   statusBackground: {fileID: 4051870278651162591}
   statusText: {fileID: 5982846179494194095}
+--- !u!114 &1943279336226555202
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6407065290701367430}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 899be6a50f9f4d94a966da0d8f06e2aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowPlayers:
+    m_InternalValue: 0
+  showPlayersInitialValue: 0
+  transparentAlphaValue: 0.5
+  childObjectsToHide:
+  - {fileID: 1554806487246648625}
+  - {fileID: 5976519375582307962}
+  - {fileID: 2071847077682119760}
+  - {fileID: 3001025778423992067}

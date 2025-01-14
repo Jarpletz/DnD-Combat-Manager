@@ -37,7 +37,7 @@ public class LobbySceneTransitioner : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (NetworkManager.Singleton.IsServer)
+        if (NetworkManager.Singleton && NetworkManager.Singleton.IsServer)
         {
             NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
         }

@@ -1721,7 +1721,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3dee98863da9fb4d86e5113b3fc2a9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameplaySceneName: TestScene
+  gameplaySceneName: BeyondNimVillage
   lobbyTimeout: 30
 --- !u!4 &472313718
 Transform:
@@ -5550,7 +5550,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 901938233}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.83877337
+  m_Size: 0.83853775
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -7074,8 +7074,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2008750506}
   m_HandleRect: {fileID: 2008750505}
   m_Direction: 0
-  m_Value: 0
-  m_Size: 1
+  m_Value: 1
+  m_Size: 0.9999999
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:

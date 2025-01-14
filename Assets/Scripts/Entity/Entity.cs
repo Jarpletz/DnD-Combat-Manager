@@ -102,6 +102,9 @@ public class Entity : NetworkBehaviour
 
     private void OnMouseDown()
     {
+        //Cancel if mouse is over a UI element
+        if (HelperFunctions.IsPointerOverUIElement()) return;
+
         if (IsOwner || IsServer)
         {
             UIManager uiManager = GameObject.FindWithTag("UI").GetComponent<UIManager>();

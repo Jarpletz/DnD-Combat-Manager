@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class CameraMovement : MonoBehaviour
 {
@@ -39,6 +41,13 @@ public class CameraMovement : MonoBehaviour
 
         //Zoom (Scrollwheel) 
         float zoomDirection =Input.GetAxis("Mouse ScrollWheel");
+
+        //cancel zoom if mouse is over a UI element
+        if (HelperFunctions.IsPointerOverUIElement())
+        {
+            zoomDirection = 0;
+        }
+
         if (zoomDirection > 0.0)
         {
             zoomDirection = 1;

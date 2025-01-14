@@ -581,7 +581,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3824109079
+  GlobalObjectIdHash: 453649805
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -747,7 +747,7 @@ MonoBehaviour:
     m_InternalValue: 0
   ConditionIndex:
     m_InternalValue: 0
-  isPlayer: 1
+  isPlayer: 0
   initialName: Debugger
   initialColor: {r: 0.6784314, g: 0.9960785, b: 0.16078432, a: 1}
   inititalHealth: 22
@@ -792,7 +792,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowPlayers:
     m_InternalValue: 0
-  showPlayersInitialValue: 1
+  showPlayersInitialValue: 0
   transparentAlphaValue: 0.5
   childObjectsToHide:
   - {fileID: 523907741701131733}
