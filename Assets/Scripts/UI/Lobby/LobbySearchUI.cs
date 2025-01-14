@@ -63,4 +63,8 @@ public class LobbySearchUi : MonoBehaviour
         LobbyManager.Instance.CreateLobby();
     }
 
+    public void CloseGame()
+    {
+        Application.Quit();
+    }
 }
