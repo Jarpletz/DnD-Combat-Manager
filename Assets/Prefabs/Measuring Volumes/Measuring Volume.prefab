@@ -143,7 +143,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1894828703
+  GlobalObjectIdHash: 2486781806
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -172,6 +172,7 @@ MonoBehaviour:
     scaleMultiplier: 0
   rotationSpeed: 90
   movementToTargetSpeed: 30
+  GMColor: {r: 0.70005697, g: 0.119551405, b: 0.7283019, a: 1}
   measurementTools:
   - name: Cube
     prefab: {fileID: 7452108527434509941, guid: 0435284ec1f21d344bac2d7ed0b2c143, type: 3}

@@ -53,15 +53,6 @@ public class LobbyManager : MonoBehaviour
         joinedLobby = null;
     }
 
-    /*void OnGUI()
-    {
-        GUILayout.BeginArea(new Rect(10, 10, 300, 300));
-        if (GUILayout.Button("Create Lobby")) CreateLobby();
-        if (GUILayout.Button("List Lobbies")) ListLobbies();
-
-        GUILayout.EndArea();
-    }*/
-
     private void OnDestroy()
     {
         if(NetworkManager.Singleton != null)

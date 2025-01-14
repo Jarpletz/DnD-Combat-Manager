@@ -2608,9 +2608,9 @@ MonoBehaviour:
     m_InternalValue: 0
   ConditionIndex:
     m_InternalValue: 0
-  isPlayer: 1
+  isPlayer: 0
   initialName: Peter
-  initialColor: {r: 0.23225805, g: 0.83396226, b: 0.023602564, a: 1}
+  initialColor: {r: 0.6773585, g: 0.7234501, b: 1, a: 1}
   inititalHealth: 65
   inititalMaxHealth: 65
   nameTag: {fileID: 293558629796140433}

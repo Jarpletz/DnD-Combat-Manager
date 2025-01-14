@@ -450,7 +450,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &312444220
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1288,7 +1288,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 761607317667529066, guid: bb3d421a97eb06045aeeb84e6b1cf395, type: 3}
       propertyPath: initialName
-      value: Default Male
+      value: Default Male 3
       objectReference: {fileID: 0}
     - target: {fileID: 4646443690128569057, guid: bb3d421a97eb06045aeeb84e6b1cf395, type: 3}
       propertyPath: GlobalObjectIdHash
@@ -4192,7 +4192,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 761607317667529066, guid: bb3d421a97eb06045aeeb84e6b1cf395, type: 3}
       propertyPath: initialName
-      value: Default Male
+      value: Default Male 2
       objectReference: {fileID: 0}
     - target: {fileID: 4646443690128569057, guid: bb3d421a97eb06045aeeb84e6b1cf395, type: 3}
       propertyPath: GlobalObjectIdHash
@@ -4649,6 +4649,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 761607317667529066, guid: bb3d421a97eb06045aeeb84e6b1cf395, type: 3}
+      propertyPath: initialName
+      value: Default Male 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4646443690128569057, guid: bb3d421a97eb06045aeeb84e6b1cf395, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 825744570
@@ -4792,7 +4796,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 761607317667529066, guid: bb3d421a97eb06045aeeb84e6b1cf395, type: 3}
       propertyPath: initialName
-      value: Default Male
+      value: Default Male 4
       objectReference: {fileID: 0}
     - target: {fileID: 4646443690128569057, guid: bb3d421a97eb06045aeeb84e6b1cf395, type: 3}
       propertyPath: GlobalObjectIdHash

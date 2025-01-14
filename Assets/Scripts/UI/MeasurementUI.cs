@@ -25,7 +25,6 @@ public class MeasurementUI : MonoBehaviour
             // Unsubscribe from the flying callback
             measuringVolume.OnStateChanged -= RefreshValues;
         }
-
     }
 
     private void Update()
@@ -35,7 +34,6 @@ public class MeasurementUI : MonoBehaviour
             FindMeasuringVolume();
             return;
         }
-
     }
 
 

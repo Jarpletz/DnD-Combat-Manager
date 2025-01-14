@@ -126,7 +126,6 @@ public class PlayerInfoManager : NetworkBehaviour
     }
 
     public void RemovePlayerInfo(ulong clientId) {
-        Debug.Log("Removed Player from Info:" + clientId);
         localPlayers.Remove(localPlayers.Find(p => p.clientId == clientId));
         m_players.Remove(m_players.Find(p => p.clientId == clientId));
     }

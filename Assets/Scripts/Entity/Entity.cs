@@ -162,6 +162,7 @@ public class Entity : NetworkBehaviour
         if (IsServer)
         {
             EntityColor.Value = newColor;
+            nameTag.color = color;
             updateNametagColorClientRpc(newColor);
         }
         else
@@ -176,11 +177,16 @@ public class Entity : NetworkBehaviour
     {
         EntityColor.Value = newColor;
         updateNametagColorClientRpc(newColor);
+
+        Color c;
+        if (ColorUtility.TryParseHtmlString(newColor, out c))
+        {
+            nameTag.color = c;
+        }
     }
     [ClientRpc]
     void updateNametagColorClientRpc(string newColor)
     {
-
         Color c;
         if (ColorUtility.TryParseHtmlString(newColor, out c))
         {

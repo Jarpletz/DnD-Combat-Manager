@@ -28,6 +28,7 @@ public class MeasuringVolume : NetworkBehaviour
     [Header ("Config")]
     [SerializeField] float rotationSpeed;
     [SerializeField] float movementToTargetSpeed;
+    [SerializeField] Color GMColor;
 
     [Header ("Possible Volumes")]
     public List<MeasurementTool> measurementTools = new List<MeasurementTool>();
@@ -238,6 +239,9 @@ public class MeasuringVolume : NetworkBehaviour
         netObj.transform.rotation = previousTransform.rotation;
         netObj.transform.localScale = previousTransform.localScale;
 
+        SetVolumeColor(netObj);
+
+
         currentVolume = netObj;
         if (!IsOwner) 
             currentVolume.gameObject.SetActive(showOthers.Value);
@@ -258,6 +262,8 @@ public class MeasuringVolume : NetworkBehaviour
             {
                 currentVolume.gameObject.SetActive(showOthers.Value);
             }
+
+            SetVolumeColor(networkObject);
         }
     }
 
@@ -288,4 +294,20 @@ public class MeasuringVolume : NetworkBehaviour
         }
     }
    
+    void SetVolumeColor(NetworkObject volume)
+    {
+        Entity entity = EntityManager.Instance.entities.Find(e => e.OwnerClientId == volume.OwnerClientId);
+
+        Color c;
+        if (entity && !entity.IsOwnedByServer)
+        {
+            c = entity.GetEntityColor();
+        }
+        else
+        {
+            c = GMColor;
+        }
+        Renderer renderer = volume.GetComponentInChildren<Renderer>();
+        renderer.material.color = c;
+    }
 }
