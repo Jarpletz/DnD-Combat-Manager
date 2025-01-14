@@ -93,6 +93,10 @@ public class EntityManager : NetworkBehaviour
         if (IsServer)
         {
             currentTurnIndex.Value = (currentTurnIndex.Value + 1) % entities.Count;
+            if(GetCurrentEntity().Health.Value<1 && !GetCurrentEntity().isPlayer)
+            {
+                IncrementTurn();
+            }
         }
         else
         {
@@ -107,6 +111,10 @@ public class EntityManager : NetworkBehaviour
             if (currentTurnIndex.Value < 0)
             {
                 currentTurnIndex.Value = entities.Count - 1;
+            }
+            if (GetCurrentEntity().Health.Value < 1 && !GetCurrentEntity().isPlayer)
+            {
+                DecrementTurn();
             }
         }
         else
@@ -126,6 +134,11 @@ public class EntityManager : NetworkBehaviour
         if (currentTurnIndex.Value < 0)
         {
             currentTurnIndex.Value = entities.Count -  1;
+        }
+
+        if (GetCurrentEntity().Health.Value < 1 && !GetCurrentEntity().isPlayer)
+        {
+            UpdateTurnServerRPC(distanceChanged);
         }
     }
 }

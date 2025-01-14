@@ -24,7 +24,7 @@ public class Entity : NetworkBehaviour
     public EntityUpdated OnEntityUpdatedCallback;
 
     [Header ("Settings / Initial Values")]
-    [SerializeField] bool isPlayer = true;
+    public bool isPlayer = true;
     [SerializeField] string initialName;
     [SerializeField] Color initialColor;
     [SerializeField] int inititalHealth;
